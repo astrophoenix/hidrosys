@@ -59,7 +59,7 @@ WSGI_APPLICATION = 'hidro_sys.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
         'NAME': 'hidro_sysdb',
         'USER': 'root',
         'PASSWORD': 'pegazo13',
@@ -86,3 +86,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT='/opt/statics/hidro_sys/'

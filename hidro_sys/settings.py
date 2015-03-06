@@ -59,11 +59,11 @@ WSGI_APPLICATION = 'hidro_sys.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
         'NAME': 'hidro_sysdb',
         'USER': 'root',
         'PASSWORD': 'pegazo13',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'HOST': '104.236.0.177',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
 }

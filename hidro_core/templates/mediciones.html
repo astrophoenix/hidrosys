@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="tabla_mediciones">
+        <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Temperatura (°C)</th>
+                <th>Humedad (%)</th>
+                <th>Intensidad Luz(%)</th>
+              </thead>
+              <tbody>
+                {% for equipo_medicion in equipo_mediciones %}
+                    <tr id="{{equipo_medicion.id}}">
+                        <td>{{equipo_medicion.fecha_creacion|date:"d/m/y"}}</td>
+                        <td>{{equipo_medicion.fecha_creacion|time}}</td>
+                        <td>{{equipo_medicion.temperatura}}</td>
+                        <td>{{equipo_medicion.humedad}}</td>
+                        <td>{{equipo_medicion.intensidad_luz}}</td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

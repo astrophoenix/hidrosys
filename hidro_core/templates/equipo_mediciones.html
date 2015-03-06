@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-2">
+        Tiempo real
+        <button class="btn btn-info"><i class="glyphicon glyphicon-refresh"></i>Activar</button>
+    </div>
+<div class="col-md-12 panel-info">
+    <div class="content-box-header panel-heading">
+        <div class="panel-title ">
+            <h4>Filtrar Mediciones</h4>
+
+        </div>
+        
+        <div class="panel-options">
+            <!-- <a data-rel="collapse" href="#"><i class="glyphicon glyphicon-refresh"></i></a>
+            <a data-rel="reload" href="#"><i class="glyphicon glyphicon-cog"></i></a> -->
+
+
+        </div>
+    </div>
+    <div class="content-box-large box-with-header">
+
+        <div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-md-1 control-label" for="text-field">Desde : </label>
+                    <div class="col-sm-4">
+                        <div class="bfh-datepicker" data-format="y-m-d" data-date="today"></div>
+                    </div>
+                    <div class="col-sm-2"></div>
+                    <label class="col-md-1 control-label" for="text-field">Hasta:</label>
+                    <div class="col-sm-4">
+                        <div class="bfh-datepicker" data-format="y-m-d" data-date="today"></div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <button id="btn_buscar_mediciones" class="btn btn-primary" type="submit">Buscar</button>
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="row">
+    <div id="contenido_mediciones">
+        <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Temperatura (°C)</th>
+                <th>Humedad (%)</th>
+                <th>Intensidad Luz(%)</th>
+              </thead>
+              <tbody>
+                {% for equipo_medicion in equipo_mediciones %}
+                    <tr id="{{equipo_medicion.id}}">
+                        <td>{{equipo_medicion.fecha_creacion|date:"d/m/y"}}</td>
+                        <td>{{equipo_medicion.fecha_creacion|time}}</td>
+                        <td>{{equipo_medicion.temperatura}}</td>
+                        <td>{{equipo_medicion.humedad}}</td>
+                        <td>{{equipo_medicion.intensidad_luz}}</td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <!--<script src="{{ STATIC_URL }}js/equipos.js"></script>       -->
+    <script type="text/javascript">
+        var equipo = {
+
+            init : function()
+            {
+                //(btn_buscar_mediciones).click(buscar_mediciones);
+                timer = setInterval( "equipo.actualizar_automaticamente()", 5000);
+                $("#parar_tr").click(function() { clearInterval(timer); timer = null});
+            },
+
+            actualizar_automaticamente : function()
+            {
+                var url = "{% url 'hidro_core.views.medicionesxequipoactual' equipo.id %}";
+                $('#contenido_mediciones').fadeOut("slow").load(url + ' #tabla_mediciones').fadeIn("slow");
+
+            },
+
+                       
+
+        };
+
+        $(function(){
+            equipo.init();
+        });
+    </script>
+{% endblock %}

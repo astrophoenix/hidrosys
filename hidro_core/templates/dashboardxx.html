@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="row">
+        <table class="table table-bordered">
+            
+            <tr>
+                <!-- <th style="width: 10px">Código</th> -->
+                <th>Equipo</th>
+                <th>Estado</th>
+                <!-- <th style="width: 40px">Label</th> -->
+            </tr>
+
+            {% for equipo in equipos %}
+                <tr id="{{equipo.id}}">
+                    <td><a href="{% url 'hidro_core.views.medicionesxequipo' equipo.id %}">{{ equipo.nombre }}</a></td>
+                    <td>{{ equipo.estado }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <!-- <div class="box-footer clearfix"> -->
+            <div class="pagination">
+                <span class="step-links">
+                    {% if equipos.has_previous %}
+                        <a href="?page={{ equipos.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ equipos.number }} of {{ equipos.paginator.num_pages }}.
+                    </span>
+
+                    {% if equipos.has_next %}
+                        <a href="?page={{ equipos.next_page_number }}">next</a>
+                    {% endif %}
+                </span>
+            </div>
+        <!-- </div> -->
+        
+    </div>
+
+{% endblock %}

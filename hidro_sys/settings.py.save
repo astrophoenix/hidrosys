@@ -1,3 +1,4 @@
+
 """
 Django settings for hidro_sys project.
 
@@ -59,12 +60,12 @@ WSGI_APPLICATION = 'hidro_sys.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
         'NAME': 'hidro_sysdb',
         'USER': 'root',
         'PASSWORD': 'pegazo13',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '',
+        'PORT': '3306',
     }
 }
 
@@ -85,8 +86,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-#STATIC_ROOT
 STATIC_URL = '/static/'
-
-
-#STATICFILES_DIRS = ( "/opt/statics/hidro_sys/", "/home/polls.com/polls/static", "/opt/webfiles/common", )
+STATIC_ROOT='/opt/statics/hidro_sys/'

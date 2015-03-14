@@ -58,21 +58,12 @@ WSGI_APPLICATION = 'hidro_sys.wsgi.application'
 
 DATABASES = {
     'default': {
-<<<<<<< HEAD
-        #'ENGINE': 'django.db.backends.mysql', 
         'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-=======
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
->>>>>>> 59602f36d8b59fe9da34e8867e248233f22860d8
         'NAME': 'hidro_sysdb',
         'USER': 'root',
         'PASSWORD': 'pegazo13',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-<<<<<<< HEAD
-        'PORT': '3306',
-=======
         'PORT': '',
->>>>>>> 59602f36d8b59fe9da34e8867e248233f22860d8
     }
 }
 
@@ -91,16 +82,5 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
-<<<<<<< HEAD
-#STATIC_ROOT='/opt/statics/hidro_sys/'
-STATIC_URL = '/static/'
-#que onadonda el orden si importa en python
-=======
-
-#STATIC_ROOT
 STATIC_URL = '/static/'
 
-
-#STATICFILES_DIRS = ( "/opt/statics/hidro_sys/", "/home/polls.com/polls/static", "/opt/webfiles/common", )
->>>>>>> 59602f36d8b59fe9da34e8867e248233f22860d8

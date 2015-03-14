@@ -307,7 +307,7 @@
                       var temperatura = data[i].fields.temperatura;
                       var humedad = data[i].fields.humedad;
                       var intensidad_luz = data[i].fields.intensidad_luz;
-                      console.info(fecha_creacion)
+                      //console.info(fecha_creacion)
                       tax_data.push({
                         fecha_creacion:fecha_creacion,
                         temperatura: temperatura, 
@@ -338,7 +338,8 @@
         }
 
     $(function(){
-        obtener_datos_medidos_equipo();
+        setTimeout(obtener_datos_medidos_equipo, 1000);
+        //obtener_datos_medidos_equipo();
     });
     </script>
   </body>

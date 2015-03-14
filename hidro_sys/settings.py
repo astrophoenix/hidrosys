@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import locale
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
@@ -19,6 +20,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 't03-&np((8a_9%fegm2qrulo!ulok&2drn2b%s6d8%ll4+@j9q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
+LOCALE_ALL_CONFIG = 'es_EC.UTF-8'
+LOCALE_NUMERIC_CONFIG = 'en_US.UTF-8'
+
+
+locale.setlocale(locale.LC_ALL,(LOCALE_ALL_CONFIG))
+locale.setlocale(locale.LC_NUMERIC, LOCALE_NUMERIC_CONFIG)
+locale.setlocale(locale.LC_MONETARY, LOCALE_NUMERIC_CONFIG)
+
 DEBUG = False
 
 TEMPLATE_DEBUG = True
@@ -62,22 +72,24 @@ DATABASES = {
         'NAME': 'hidro_sysdb',
         'USER': 'root',
         'PASSWORD': 'pegazo13',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'HOST': '104.236.0.177',   # Or an IP Address that your DB is hosted on
         'PORT': '',
     }
 }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
+TIME_ZONE = 'America/Guayaquil'
 
-LANGUAGE_CODE = 'en-us'
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'es_ec'
 
-TIME_ZONE = 'UTC'
+#LANGUAGE_CODE = 'en-us'
+#TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 

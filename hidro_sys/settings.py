@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -59,6 +58,7 @@ WSGI_APPLICATION = 'hidro_sys.wsgi.application'
 
 DATABASES = {
     'default': {
+        #'ENGINE': 'django.db.backends.mysql', 
         'ENGINE': 'django.db.backends.postgresql_psycopg2', 
         'NAME': 'hidro_sysdb',
         'USER': 'root',
@@ -84,6 +84,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-
+#STATIC_ROOT='/opt/statics/hidro_sys/'
 STATIC_URL = '/static/'
-STATIC_ROOT='/opt/statics/hidro_sys/'
+#que onadonda el orden si importa en python

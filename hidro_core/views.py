@@ -87,7 +87,10 @@ def graficasxequipo(request, id):
 
 @login_required
 def obtener_datos_medidos_equipo(request, id):
-    equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+    equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')[:10]
+    #limit = 10
+    #count = equipo_mediciones.count()
+    #equipo_mediciones = equipo_mediciones.order_by('-fecha_creacion')[count-limit:]
     data = serializers.serialize("json", equipo_mediciones)
     return HttpResponse(data, content_type='application/json')
 	

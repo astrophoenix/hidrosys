@@ -84,7 +84,7 @@
             init : function()
             {
                 //(btn_buscar_mediciones).click(buscar_mediciones);
-                timer = setInterval( "equipo.actualizar_automaticamente()", 5000);
+                timer = setInterval( "equipo.actualizar_automaticamente()", 3000);
                 $("#parar_tr").click(function() { clearInterval(timer); timer = null});
             },
 

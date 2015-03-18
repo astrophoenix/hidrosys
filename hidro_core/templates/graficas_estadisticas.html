@@ -274,6 +274,7 @@
     <script src="{{ STATIC_URL }}js/stats.js"></script>
     <script type="text/javascript">
           function obtener_datos_medidos_equipo() {
+            console.info("genera grafic");
             var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' equipo_mediciones.0.equipo.id %}";
             $.ajax({
                 url : url_view, // the endpoint
@@ -300,10 +301,12 @@
                     //     ykeys: ['visits', 'signups'],
                     //     labels: ['Visits', 'User signups']
                     // });
-
+                    $("#hero-graph").html("");
                     var tax_data = [];
                     for (var i = 0; i < data.length; i++) {
-                      var fecha_creacion = data[i].fields.fecha_creacion;
+                      var date = new Date(data[i].fields.fecha_creacion);
+                      var fecha_creacion = date.getTime();
+                      //console.info(fecha_creacion)
                       var temperatura = data[i].fields.temperatura;
                       var humedad = data[i].fields.humedad;
                       var intensidad_luz = data[i].fields.intensidad_luz;
@@ -338,7 +341,7 @@
         }
 
     $(function(){
-        setTimeout(obtener_datos_medidos_equipo, 1000);
+        setInterval(obtener_datos_medidos_equipo, 3000);
         //obtener_datos_medidos_equipo();
     });
     </script>

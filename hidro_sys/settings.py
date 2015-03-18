@@ -1,13 +1,3 @@
-"""
-Django settings for hidro_sys project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.7/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.7/ref/settings/
-"""
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import locale
@@ -29,7 +19,7 @@ locale.setlocale(locale.LC_ALL,(LOCALE_ALL_CONFIG))
 locale.setlocale(locale.LC_NUMERIC, LOCALE_NUMERIC_CONFIG)
 locale.setlocale(locale.LC_MONETARY, LOCALE_NUMERIC_CONFIG)
 
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 

@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
 from hidro_core.models import Equipo, EquipoMedicion
-from hidro_core.forms import EquipoForm
+#from hidro_core.forms import EquipoForm
 import json
 from django.core import serializers
 
@@ -105,29 +105,29 @@ def obtener_datos_medidos_equipo(request, id = None):
     data = serializers.serialize("json", equipo_mediciones)
     return HttpResponse(data, content_type='application/json')
 
-@login_required
-def registrar_obtener_equipo(request, id = None):
-	equipo = None
-	error_msg = None
-	if request.method == 'POST':
-		form_equipo = EquipoForm(request.POST)
-		if form_equipo.is_valid():
-			try:
-				equipo = form_equipo.save()
-				response = redirect(reverse(registrar_obtener_equipo, args = [equipo.id]))
-				return response
-			except ApplicationError,e:
-				error_msg = str(e)
-				transaction.rollback()
-			except:
-				transaction.rollback()
-				raise
-	else:
-		form_equipo = EquipoForm()
+# @login_required
+# def registrar_obtener_equipo(request, id = None):
+# 	equipo = None
+# 	error_msg = None
+# 	if request.method == 'POST':
+# 		form_equipo = EquipoForm(request.POST)
+# 		if form_equipo.is_valid():
+# 			try:
+# 				equipo = form_equipo.save()
+# 				response = redirect(reverse(registrar_obtener_equipo, args = [equipo.id]))
+# 				return response
+# 			except ApplicationError,e:
+# 				error_msg = str(e)
+# 				transaction.rollback()
+# 			except:
+# 				transaction.rollback()
+# 				raise
+# 	else:
+# 		form_equipo = EquipoForm()
 
-	usuario = request.user.username
-	parametros = {"titulo_modulo" : "Equipo", "usuario" : usuario, "form_equipo" : form_equipo}
-	return render_to_response('equipo.html',parametros, context_instance=RequestContext(request))
+# 	usuario = request.user.username
+# 	parametros = {"titulo_modulo" : "Equipo", "usuario" : usuario, "form_equipo" : form_equipo}
+# 	return render_to_response('equipo.html',parametros, context_instance=RequestContext(request))
 	
 	
 	

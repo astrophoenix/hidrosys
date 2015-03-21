@@ -63,7 +63,7 @@
                 {% for equipo_medicion in equipo_mediciones %}
                     <tr id="{{equipo_medicion.id}}">
                         <td>{{equipo_medicion.fecha_creacion|date:"d/m/Y"}}</td>
-                        <td>{{equipo_medicion.fecha_creacion|date:"H:i"}}</td>
+                        <td>{{equipo_medicion.fecha_creacion|date:"H:i:s"}}</td>
                         <td>{{equipo_medicion.temperatura}}</td>
                         <td>{{equipo_medicion.humedad}}</td>
                         <td>{{equipo_medicion.intensidad_luz}}</td>

@@ -39,8 +39,8 @@ def login_usuario(request):
 		
 	return render_to_response('login.html', context_instance=RequestContext(request))
 
-def logout(request):
-    logout(request)
+# def logout(request):
+#     logout(request)
 
 @login_required
 def dashboard(request):

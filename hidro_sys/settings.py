@@ -73,7 +73,7 @@ TIME_ZONE = 'America/Guayaquil'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'es_ec'
+LANGUAGE_CODE = 'es-EC'
 
 #LANGUAGE_CODE = 'en-us'
 #TIME_ZONE = 'UTC'

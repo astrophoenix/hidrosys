@@ -69,12 +69,20 @@ def medicionesxequipo(request, id):
 @login_required
 def medicionesxequipoactual(request, id):
 	try:
-		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
-		equipo = Equipo.objects.get(pk = id)
-		titulo_modulo = "Mediciones " + str(equipo_mediciones[0].equipo.nombre)
-		return render_to_response('mediciones.html',{"titulo_modulo": titulo_modulo, "equipo_mediciones": equipo_mediciones, "equipo": equipo}, context_instance=RequestContext(request))
-	except:
-	    return HttpResponseRedirect(reverse(dashboard))
+		if id:
+			equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+			equipo = Equipo.objects.get(pk = id)
+			titulo_modulo = "Mediciones " + str(equipo_mediciones[0].equipo.nombre)
+			parametros = {
+				"titulo_modulo": titulo_modulo, 
+				"equipo_mediciones": equipo_mediciones, 
+				"equipo": equipo
+			}
+			return render_to_response('mediciones.html',parametros, context_instance=RequestContext(request))
+	except ApplicationError, msg:
+		print str(msg)
+	
+	return HttpResponseRedirect(reverse(dashboard))
 
 @login_required
 def graficasxequipo(request, id):
@@ -88,9 +96,6 @@ def graficasxequipo(request, id):
 @login_required
 def obtener_datos_medidos_equipo(request, id):
     equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')[:10]
-    #limit = 10
-    #count = equipo_mediciones.count()
-    #equipo_mediciones = equipo_mediciones.order_by('-fecha_creacion')[count-limit:]
     data = serializers.serialize("json", equipo_mediciones)
     return HttpResponse(data, content_type='application/json')
 	

@@ -274,7 +274,7 @@
     <script src="{{ STATIC_URL }}js/stats.js"></script>
     <script type="text/javascript">
           function obtener_datos_medidos_equipo() {
-            console.info("genera grafic");
+            //console.info("genera grafic");
             var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' equipo_mediciones.0.equipo.id %}";
             $.ajax({
                 url : url_view, // the endpoint

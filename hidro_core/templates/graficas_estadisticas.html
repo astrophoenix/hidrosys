@@ -107,7 +107,7 @@
 
         <div class="content-box-large">
           <div class="panel-heading">
-          <div class="panel-title">Temperatura vs Tiempo Astro </div>
+          <div class="panel-title">Temperatura vs Tiempo</div>
           
           <div class="panel-options">
             <a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
@@ -274,39 +274,18 @@
     <script src="{{ STATIC_URL }}js/stats.js"></script>
     <script type="text/javascript">
           function obtener_datos_medidos_equipo() {
-            //console.info("genera grafic");
             var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' equipo_mediciones.0.equipo.id %}";
             $.ajax({
                 url : url_view, // the endpoint
                 type : "GET", // http method
-                // handle a successful response
+                
                 success : function(data)
                 {
-                    // Morris Line Chart
-                    // var tax_data = [
-                    //     {"period": "2013-04", "visits": 2407, "signups": 660},
-                    //     {"period": "2013-03", "visits": 3351, "signups": 729},
-                    //     {"period": "2013-02", "visits": 2469, "signups": 1318},
-                    //     {"period": "2013-01", "visits": 2246, "signups": 461},
-                    //     {"period": "2012-12", "visits": 3171, "signups": 1676},
-                    //     {"period": "2012-11", "visits": 2155, "signups": 681},
-                    //     {"period": "2012-10", "visits": 1226, "signups": 620},
-                    //     {"period": "2012-09", "visits": 2245, "signups": 500}
-                    // ];
-                    // Morris.Line({
-                    //     element: 'hero-graph',
-                    //     data: tax_data,
-                    //     xkey: 'period',
-                    //     xLabels: "month",
-                    //     ykeys: ['visits', 'signups'],
-                    //     labels: ['Visits', 'User signups']
-                    // });
                     $("#hero-graph").html(" ");
                     var tax_data = [];
                     for (var i = 0; i < data.length; i++) {
                       var date = new Date(data[i].fields.fecha_creacion);
                       var fecha_creacion = date.getTime();
-                      //console.info(fecha_creacion)
                       var temperatura = data[i].fields.temperatura;
                       var humedad = data[i].fields.humedad;
                       var intensidad_luz = data[i].fields.intensidad_luz;
@@ -332,15 +311,13 @@
 
                 // handle a non-successful response
                 error : function(xhr,errmsg,err) {
-                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-
-                    // $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                    //     " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the 
                 }
             });
         }
 
     $(function(){
+
         obtener_datos_medidos_equipo();
         setInterval(obtener_datos_medidos_equipo, 3000);
     });

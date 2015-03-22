@@ -23,7 +23,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 ADMINS = (
      ('Gabriel Romero', 'galexanderomero24@gmail.com'),

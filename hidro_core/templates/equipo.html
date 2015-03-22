@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="content-box-large">
+    {% comment %}
+    <div class="panel-heading">
+        <div class="panel-title">Vertical Form</div>
+      
+        <div class="panel-options">
+          <a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+          <a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+        </div>
+    </div>{% endcomment %}
+    <div class="panel-body">
+        <form id="form_equipo" action="{% url 'hidro_core.views.registrar_obtener_equipo' %}">
+            <fieldset>
+                <div class="form-group">
+                    <label>Nombre </label>
+                    {{ form_equipo.nombre }}
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    {{ form_equipo.estado }}
+                </div>
+            </fieldset>
+            <div>
+                <a id="btn_guardar" class="btn btn-primary">
+                    <i class="fa fa-save"></i>
+                    Guardar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        $(function(){
+            $("#btn_guardar").click(function(){$("#form_equipo").submit();});
+        });
+    </script>        
+{% endblock %}
+ 

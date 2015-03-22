@@ -41,7 +41,8 @@ def login_usuario(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse(login_usuario))
+    return render(request, 'login.html')
+
 
 @login_required
 def dashboard(request):

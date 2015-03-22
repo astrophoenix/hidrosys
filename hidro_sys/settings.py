@@ -19,13 +19,17 @@ locale.setlocale(locale.LC_ALL,(LOCALE_ALL_CONFIG))
 locale.setlocale(locale.LC_NUMERIC, LOCALE_NUMERIC_CONFIG)
 locale.setlocale(locale.LC_MONETARY, LOCALE_NUMERIC_CONFIG)
 
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+ADMINS = (
+     ('Gabriel Romero', 'galexanderomero24@gmail.com'),
+)
 
+MANAGERS = ADMINS
 # Application definition
 
 INSTALLED_APPS = (

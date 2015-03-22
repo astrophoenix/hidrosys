@@ -41,7 +41,8 @@ def login_usuario(request):
 
 def logout_view(request):
     logout(request)
-    return render(request, 'login.html')
+    #return render(request, 'login.html')
+    return render_to_response('login.html', context_instance=RequestContext(request))
 
 
 @login_required

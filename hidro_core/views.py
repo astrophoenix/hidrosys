@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
-
+from django.contrib import auth
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
@@ -39,8 +39,9 @@ def login_usuario(request):
 		
 	return render_to_response('login.html', context_instance=RequestContext(request))
 
-# def logout(request):
-#     logout(request)
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse(login_usuario))
 
 @login_required
 def dashboard(request):

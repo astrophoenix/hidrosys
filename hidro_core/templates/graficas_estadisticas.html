@@ -301,7 +301,7 @@
                     //     ykeys: ['visits', 'signups'],
                     //     labels: ['Visits', 'User signups']
                     // });
-                    $("#hero-graph").html("");
+                    $("#hero-graph").html(" ");
                     var tax_data = [];
                     for (var i = 0; i < data.length; i++) {
                       var date = new Date(data[i].fields.fecha_creacion);
@@ -341,8 +341,8 @@
         }
 
     $(function(){
+        obtener_datos_medidos_equipo();
         setInterval(obtener_datos_medidos_equipo, 3000);
-        //obtener_datos_medidos_equipo();
     });
     </script>
   </body>

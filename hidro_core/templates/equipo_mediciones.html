@@ -64,9 +64,27 @@
                     <tr id="{{equipo_medicion.id}}">
                         <td>{{equipo_medicion.fecha_creacion|date:"d/m/Y"}}</td>
                         <td>{{equipo_medicion.fecha_creacion|date:"H:i:s"}}</td>
-                        <td>{{equipo_medicion.temperatura}}</td>
-                        <td>{{equipo_medicion.humedad}}</td>
-                        <td>{{equipo_medicion.intensidad_luz}}</td>
+                        <td>
+                            {% if equipo_medicion.temperatura > 10 %}
+                                <span class="label label-danger">{{equipo_medicion.temperatura}}</span>
+                            {% else %}
+                                {{ equipo_medicion.temperatura }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if equipo_medicion.humedad > 1 %}
+                                <span class="label label-danger">{{ equipo_medicion.humedad }}</span>
+                            {% else %}
+                                {{ equipo_medicion.humedad }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if equipo_medicion.intensidad_luz > 3 %}
+                                <span class="label label-danger">{{ equipo_medicion.intensidad_luz }}</span>
+                            {% else %}
+                                {{ equipo_medicion.intensidad_luz }}
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
               </tbody>

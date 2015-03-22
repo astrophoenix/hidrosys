@@ -39,7 +39,7 @@ def login_usuario(request):
 		
 	return render_to_response('login.html', context_instance=RequestContext(request))
 
-def logout_view(request):
+def salir(request):
     logout(request)
     #return render(request, 'login.html')
     return render_to_response('login.html', context_instance=RequestContext(request))

@@ -9,7 +9,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', "hidro_core.views.login_usuario"),
-    url(r'^logout/', "hidro_core.views.logout_view"),
+    url(r'^logout/', "hidro_core.views.salir"),
     #url(r'^registrar_obtener_equipo/', "hidro_core.views.registrar_obtener_equipo"),
     #url(r'^registrar_obtener_equipo/(?P<id>\d+)/$', "hidro_core.views.registrar_obtener_equipo"),
 	url(r'^dashboard/', "hidro_core.views.dashboard"),

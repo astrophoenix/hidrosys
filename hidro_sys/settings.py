@@ -19,7 +19,7 @@ locale.setlocale(locale.LC_ALL,(LOCALE_ALL_CONFIG))
 locale.setlocale(locale.LC_NUMERIC, LOCALE_NUMERIC_CONFIG)
 locale.setlocale(locale.LC_MONETARY, LOCALE_NUMERIC_CONFIG)
 
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 

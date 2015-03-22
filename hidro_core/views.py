@@ -39,10 +39,10 @@ def login_usuario(request):
 		
 	return render_to_response('login.html', context_instance=RequestContext(request))
 
+@login_required
 def salir(request):
     logout(request)
-    #return render(request, 'login.html')
-    return render_to_response('login.html', context_instance=RequestContext(request))
+    return HttpResponseRedirect('/')
 
 
 @login_required

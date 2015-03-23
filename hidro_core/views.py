@@ -17,7 +17,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
 from hidro_core.models import Equipo, EquipoMedicion
 from hidro_core.forms import EquipoForm, BuscarEquipoForm
-from django.core.mail import send_mail
+#from django.core.mail import send_mail
 import json
 from django.core import serializers
 
@@ -72,20 +72,23 @@ def dashboard(request):
 	    equipos = paginator.page(paginator.num_pages)
 
 	usuario = request.user.username
-	return render_to_response('dashboard.html',{"usuario" : usuario, "titulo_modulo": titulo_modulo, "equipos": equipos, "form_buscar":form_buscar}, context_instance=RequestContext(request))
+	parametros = {
+		"usuario" : usuario, 
+		"titulo_modulo": titulo_modulo, 
+		"equipos": equipos, 
+		"form_buscar":form_buscar
+	}
+	return render_to_response('dashboard.html',parametros, context_instance=RequestContext(request))
    
 @login_required
 def medicionesxequipo(request, id = None):
-	#print "equipo_id" + str(id)
-	#try:
 	equipo = Equipo.objects.get(pk = id)
 	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
 	equipo_mediciones_ultimas = equipo_mediciones[:3]
 	titulo_modulo = "Mediciones " + str(equipo_mediciones[0].equipo.nombre)
 	usuario = request.user.username
-	return render_to_response('equipo_mediciones.html',{"titulo_modulo": titulo_modulo, "usuario" : usuario, "equipo_mediciones": equipo_mediciones, "equipo": equipo}, context_instance=RequestContext(request))
-	#except:
-	#    return HttpResponseRedirect(reverse(dashboard))
+	parametros = {"titulo_modulo": titulo_modulo, "usuario" : usuario, "equipo_mediciones": equipo_mediciones, "equipo": equipo}
+	return render_to_response('equipo_mediciones.html',parametros, context_instance=RequestContext(request))
 
 @login_required
 def medicionesxequipoactual(request, id = None):
@@ -104,10 +107,12 @@ def medicionesxequipoactual(request, id = None):
 
 		equipo = Equipo.objects.get(pk = id)
 		titulo_modulo = "Mediciones " + str(equipo_mediciones[0].equipo.nombre)
+		usuario = request.user.username
 		parametros = {
 			"titulo_modulo": titulo_modulo, 
 			"equipo_mediciones": equipo_mediciones, 
-			"equipo": equipo
+			"equipo": equipo,
+			"usuario" : usuario
 		}
 		return render_to_response('mediciones.html',parametros, context_instance=RequestContext(request))
 	
@@ -116,12 +121,10 @@ def medicionesxequipoactual(request, id = None):
 
 @login_required
 def graficasxequipo(request, id = None):
-	#try:
 	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
-		#titulo_modulo = "Graficas " + str(equipo_mediciones[0].equipo.nombre)
-	return render_to_response('graficas_estadisticas.html',{"equipo_mediciones": equipo_mediciones}, context_instance=RequestContext(request))
-	#except:
-	    #return HttpResponseRedirect(reverse(dashboard))
+	parametros = {"equipo_mediciones": equipo_mediciones, "usuario" : usuario}
+	return render_to_response('graficas_estadisticas.html',parametros, context_instance=RequestContext(request))
+	
 
 @login_required
 def obtener_datos_medidos_equipo(request, id = None):
@@ -156,12 +159,3 @@ def registrar_obtener_equipo(request, id = None):
 def eliminar_equipo(request, id = None):
 	equipo = Equipo.objects.get(pk = id).delete()
 	return HttpResponseRedirect(reverse(dashboard))
-
-# @login_required
-# def consultar_equipos(request):
-# 	if request.method == 'POST':
-# 		nombre = request.POST['nombre']
-# 		#estado = request.POST['estado']
-# 		equipos = Equipo.objects.filter(nombre=nombre)
-# 		parametros = {"titulo_modulo" : "Equipo ", "equipos" : equipos}
-# 		return render_to_response('dashboard.html', parametros, context_instance=RequestContext(request))

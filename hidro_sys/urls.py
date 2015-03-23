@@ -18,5 +18,5 @@ urlpatterns = patterns('',
 	url (r'^graficasxequipo/(?P<id>\d+)/$', 'hidro_core.views.graficasxequipo'),
     url (r'^obtener_datos_medidos_equipo/(?P<id>\d+)/$', 'hidro_core.views.obtener_datos_medidos_equipo'),
     url (r'^eliminar_equipo/(?P<id>\d+)/$', 'hidro_core.views.eliminar_equipo'),
-	#url (r'^consultar_equipos/$', 'hidro_core.views.consultar_equipos'),
+    
 )

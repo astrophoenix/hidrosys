@@ -6,40 +6,73 @@
               <thead>
                 <th>Fecha</th>
                 <th>Hora</th>
-                <th>Temperatura (°C)</th>
-                <th>Humedad (%)</th>
-                <th>Intensidad Luz(%)</th>
+                {% if variable_fisica == 'temperatura_aire' %}
+                    <th>Temperatura (°C)</th>
+                {% elif variable_fisica == 'humedad_aire'%}
+                    <th>Humedad (%)</th>
+                {% elif variable_fisica == 'intensidad_luz'%}
+                    <th>Intensidad Luz(%)</th>
+                {% endif %}
               </thead>
-              <tbody>
-                {% for equipo_medicion in equipo_mediciones %}
-                    <tr id="{{equipo_medicion.id}}">
-                        <td>{{equipo_medicion.fecha_creacion|date:"d/m/Y"}}</td>
-                        <td>{{equipo_medicion.fecha_creacion|date:"H:i:s"}}</td>
-                        <td>
-                            {% if equipo_medicion.temperatura > 10 %}
-                                <span class="label label-danger">{{ equipo_medicion.temperatura }}</span>
-                            {% else %}
-                                {{ equipo_medicion.temperatura }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if equipo_medicion.humedad > 1 %}
-                                <span class="label label-danger">{{ equipo_medicion.humedad }}</span>
-                            {% else %}
-                                {{ equipo_medicion.humedad }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if equipo_medicion.intensidad_luz > 3 %}
-                                <span class="label label-danger">{{ equipo_medicion.intensidad_luz }}</span>
-                            {% else %}
-                                {{ equipo_medicion.intensidad_luz }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
+              <tbody id="data_mediciones">
+                
               </tbody>
             </table>
         </div>
+        {% comment %}<ul class="pager wizard">
+                {% if equipo_mediciones.has_previous %}
+                    <li class="previous disabled">
+                        <a href="?page={{ equipo_mediciones.previous_page_number }}" class="previous">Anterior</a>
+                    </li>
+                {% endif %}
+
+                <span class="current">
+                    Página {{ equipo_mediciones.number }} de {{ equipo_mediciones.paginator.num_pages }}
+                </span>
+
+                {% if equipo_mediciones.has_next %}
+                    <li class="next"><a href="?page={{ equipo_mediciones.next_page_number }}" class="next">Siguiente</a>
+                    </li>
+                    
+                {% endif %}
+        </ul>{% endcomment %}
     </div>
+    <input type="hidden" id="variable_fisica" name="variable_fisica" value="{{ variable_fisica }}" >
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        var obj_mediciones = {
+
+            init : function ()
+            {
+                obj_mediciones.medicionesxequipo();
+                setInterval(obj_mediciones.medicionesxequipo, 3000);
+            },
+
+            medicionesxequipo : function()
+            {
+                var url_view = "{% url 'hidro_core.views.medicionesxequipo_ajax' equipo.id %}";
+                var variable_fisica = $("#variable_fisica").val();
+                var params = { variable_fisica : variable_fisica };
+                $.ajax({
+                    url : url_view,
+                    type : "GET",
+                    data: params,
+                    success : function(data)
+                    {
+                      $("#data_mediciones").html(data);
+                    },
+
+                    // handle a non-successful response
+                    error : function(xhr,errmsg,err) {
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the 
+                    }
+                });
+            },
+        };
+            
+        $(function(){
+            obj_mediciones.init();
+        }); 
+    </script>
 {% endblock %}

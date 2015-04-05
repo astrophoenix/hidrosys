@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
-from hidro_core.models import Equipo, EquipoMedicion
+from hidro_core.models import Equipo, EquipoMedicion, UmbralMedidaFisica
 from hidro_core.forms import EquipoForm, BuscarEquipoForm
 #from django.core.mail import send_mail
 import json
@@ -34,6 +34,7 @@ def login_usuario(request):
 			if acceso.is_active and acceso.is_superuser:
 				login(request, acceso)
 				return HttpResponseRedirect(reverse(dashboard))
+				#return HttpResponseRedirect(reverse(consultar_equipos))
 			else:
 				errors = 'Usuario No Autorizado'
 				return render_to_response('login.html', context_instance=RequestContext(request))
@@ -49,6 +50,41 @@ def salir(request):
 
 @login_required
 def dashboard(request):
+	titulo_modulo = "Mediciones "
+	usuario = None
+	equipos_list = None
+	
+	# form_buscar = BuscarEquipoForm()
+	# if 'nombre' in request.GET:
+	# 	nombre = request.GET['nombre']
+	# 	equipos_list = Equipo.objects.filter(nombre = nombre)
+	# else:
+	# 	equipos_list = Equipo.objects.all()
+
+	# paginator = Paginator(equipos_list, 5) # Show 25 contacts per page
+	# page = request.GET.get('page')
+	# try:
+	#     equipos = paginator.page(page)
+	# except PageNotAnInteger:
+	#     # If page is not an integer, deliver first page.
+	#     equipos = paginator.page(1)
+	# except EmptyPage:
+	#     # If page is out of range (e.g. 9999), deliver last page of results.
+	#     equipos = paginator.page(paginator.num_pages)
+
+	usuario = request.user.username
+	parametros = {
+		"usuario" : usuario, 
+		"titulo_modulo": titulo_modulo, 
+		#"equipos": equipos, 
+		#"form_buscar":form_buscar
+	}
+	return render_to_response('dashboard.html',parametros, context_instance=RequestContext(request))
+
+
+
+@login_required
+def consultar_equipos(request):
 	titulo_modulo = "Equipos "
 	usuario = None
 	equipos_list = None
@@ -60,7 +96,7 @@ def dashboard(request):
 	else:
 		equipos_list = Equipo.objects.all()
 
-	paginator = Paginator(equipos_list, 25) # Show 25 contacts per page
+	paginator = Paginator(equipos_list, 5) # Show 25 contacts per page
 	page = request.GET.get('page')
 	try:
 	    equipos = paginator.page(page)
@@ -78,22 +114,59 @@ def dashboard(request):
 		"equipos": equipos, 
 		"form_buscar":form_buscar
 	}
-	return render_to_response('dashboard.html',parametros, context_instance=RequestContext(request))
+	return render_to_response('consultar_equipos.html',parametros, context_instance=RequestContext(request))
    
 @login_required
-def medicionesxequipo(request, id = None):
+def medicionesxequipo(request, id = None, variable_fisica=None):
 	equipo = Equipo.objects.get(pk = id)
-	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+	equipo_mediciones_list = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+
+	paginator = Paginator(equipo_mediciones_list, 5) # Show 25 contacts per page
+	page = request.GET.get('page')
+	try:
+	    equipo_mediciones = paginator.page(page)
+	except PageNotAnInteger:
+	    # If page is not an integer, deliver first page.
+	    equipo_mediciones = paginator.page(1)
+	except EmptyPage:
+	    # If page is out of range (e.g. 9999), deliver last page of results.
+	    equipo_mediciones = paginator.page(paginator.num_pages)
+
 	equipo_mediciones_ultimas = equipo_mediciones[:3]
 	titulo_modulo = "Mediciones " + str(equipo_mediciones[0].equipo.nombre)
 	usuario = request.user.username
-	parametros = {"titulo_modulo": titulo_modulo, "usuario" : usuario, "equipo_mediciones": equipo_mediciones, "equipo": equipo}
-	return render_to_response('equipo_mediciones.html',parametros, context_instance=RequestContext(request))
+	parametros = {"titulo_modulo": titulo_modulo, "usuario" : usuario, "variable_fisica" : variable_fisica, "equipo_mediciones": equipo_mediciones, "equipo": equipo}
+	return render_to_response('mediciones.html',parametros, context_instance=RequestContext(request))
+
+
+@login_required
+def medicionesxequipo_ajax(request, id = None):
+	equipo = Equipo.objects.get(pk = id)
+	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+	variable_fisica = request.GET['variable_fisica']
+	umbrales = UmbralMedidaFisica.objects.all()
+	umbral = {
+		"temperatura_aire" : umbrales[0].umbral,
+		"humedad_aire" : umbrales[1].umbral,
+		"intensidad_luz" :umbrales[3].umbral, 
+	}
+
+	parametros = {"umbral": umbral, "variable_fisica": variable_fisica, "equipo_mediciones": equipo_mediciones, "equipo": equipo}
+	return render_to_response('mediciones_ajax.html',parametros, context_instance=RequestContext(request))
 
 @login_required
 def medicionesxequipoactual(request, id = None):
 	if id:
-		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+		equipo_mediciones_list = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+		paginator = Paginator(equipo_mediciones_list, 5) # Show 25 contacts per page
+		page = request.GET.get('page')
+		try:
+		    equipo_mediciones = paginator.page(page)
+		except PageNotAnInteger:
+		    equipo_mediciones = paginator.page(1)
+		except EmptyPage:
+		    equipo_mediciones = paginator.page(paginator.num_pages)
+
 		equipo_mediciones_ultimas = equipo_mediciones[:3]
 		for mediciones in equipo_mediciones_ultimas:
 			if mediciones.temperatura > 1 or mediciones.humedad > 1 or mediciones.intensidad_luz > 1:
@@ -117,20 +190,28 @@ def medicionesxequipoactual(request, id = None):
 		return render_to_response('mediciones.html',parametros, context_instance=RequestContext(request))
 	
 	
-	return HttpResponseRedirect(reverse(dashboard))
+	return HttpResponseRedirect(reverse(consultar_equipos))
 
 @login_required
 def graficasxequipo(request, id = None):
 	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+	usuario = request.user.username
 	parametros = {"equipo_mediciones": equipo_mediciones, "usuario" : usuario}
 	return render_to_response('graficas_estadisticas.html',parametros, context_instance=RequestContext(request))
 	
 
 @login_required
 def obtener_datos_medidos_equipo(request, id = None):
-    equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')[:10]
-    data = serializers.serialize("json", equipo_mediciones)
-    return HttpResponse(data, content_type='application/json')
+	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')[:10]
+	json_data = serializers.serialize("json", equipo_mediciones)
+	return HttpResponse(json_data, content_type='application/json')
+
+
+@login_required
+def obtener_umbrales(request, id = None):
+	umbrales = UmbralMedidaFisica.objects.all()
+	json_umbrales = serializers.serialize("json", umbrales)
+	return HttpResponse(json_umbrales, content_type='application/json')
 
 
 @login_required
@@ -158,4 +239,4 @@ def registrar_obtener_equipo(request, id = None):
 @login_required
 def eliminar_equipo(request, id = None):
 	equipo = Equipo.objects.get(pk = id).delete()
-	return HttpResponseRedirect(reverse(dashboard))
+	return HttpResponseRedirect(reverse(consultar_equipos))

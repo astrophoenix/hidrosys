@@ -20,4 +20,9 @@ class EquipoMedicion(models.Model):
     humedad = models.DecimalField(max_digits = 11, decimal_places = 2)
     intensidad_luz = models.DecimalField(max_digits = 11, decimal_places = 2)
     fecha_creacion = models.DateTimeField(auto_now_add = True)
+
+
+class UmbralMedidaFisica(models.Model):
+    variable_fisica = models.CharField(max_length = 100)
+    umbral = models.DecimalField(max_digits = 11, decimal_places = 2)
     

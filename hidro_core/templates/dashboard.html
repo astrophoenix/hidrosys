@@ -6,39 +6,6 @@
     <!-- jQuery UI -->
     <link href="https://code.jquery.com/ui/1.10.3/themes/redmond/jquery-ui.css" rel="stylesheet" media="screen">
 
-<<<<<<< HEAD
-<div class="col-md-12 panel-info">
-    <div class="row">
-        <a class="btn btn-success glyphicon glyphicon-plus" href="{% url 'hidro_core.views.registrar_obtener_equipo' %}">Agregar</a>
-    </div>
-    <div class="row">&nbsp</div>
-</div>
-
-<div class="row">
-    <div class="col-md-12 panel-info">
-        <div class="content-box-header panel-heading">
-            <div class="panel-title ">
-                <h4>Buscar Equipos</h4>
-            </div>
-        </div>
-        <div class="content-box-large box-with-header">
-            <div>
-                <div class="row">
-                    <div class="form-group">
-                       <form method="GET" action="{% url 'hidro_core.views.dashboard' %}">
-			<form method="GET" action".">
-                            {% csrf_token %}
-                            <label class="col-md-1 control-label" for="text-field">Nombre: </label>
-                            <div class="col-sm-3">
-                                {{ form_buscar.nombre }}
-                            </div>
-                            
-                             <div class="col-sm-2">
-                                <button type="submit" class="btn btn-primary" >Buscar</button>
-                            </div>
-                        </form>
-                    </div>
-=======
     <!-- Bootstrap -->
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- styles -->
@@ -61,7 +28,6 @@
                 <!-- Logo -->
                 <div class="logo">
                    <h1><a href="#">Hydro</a></h1>
->>>>>>> 198726ed9fe8dadb3d06ab367b59204903f425f0
                 </div>
              </div>
 
@@ -191,57 +157,6 @@
         </div>
       </div>
     </div>
-<<<<<<< HEAD
-</div>
-
-<div class="table-responsive">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th> </th>
-                <th>Nombre</th>
-                <th>Estado</th>
-                <th>Medición</th>
-                <th>Estadisticas</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            {% for equipo in equipos %}
-                <tr id="{{equipo.id}}">
-                    <td>
-                        <a class="glyphicon glyphicon-edit" href="{% url 'hidro_core.views.registrar_obtener_equipo' equipo.id %}"></a>
-                        <a class="glyphicon glyphicon-trash" href="{% url 'hidro_core.views.eliminar_equipo' equipo.id %}"></a>
-                    </td>
-                    <td>
-                        {{ equipo.nombre }}
-                    </td>
-                    <td>
-                        {% if equipo.estado == 'A'%}
-                            <span class="label label-success">Encendido</span>
-                        {% else %}
-                            <!-- <span class="glyphicon glyphicon-minus-sign"/> -->
-                            <span class="label label-warning">Apagado</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if equipo.estado == 'A'%}
-                            <a class="glyphicon glyphicon-search btn btn-primary btn-sm" href="{% url 'hidro_core.views.medicionesxequipo' equipo.id %}"> Ver </a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if equipo.estado == 'A'%}
-                            <a class="glyphicon glyphicon-stats btn btn-success btn-sm" href="{% url 'hidro_core.views.graficasxequipo' equipo.id %}"> Graficas</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endblock %}
-=======
 
     <footer>
          <div class="container">
@@ -378,4 +293,3 @@
     </script>
   </body>
 </html>
->>>>>>> 198726ed9fe8dadb3d06ab367b59204903f425f0

@@ -240,8 +240,4 @@ def registrar_obtener_equipo(request, id = None):
 @login_required
 def eliminar_equipo(request, id = None):
 	equipo = Equipo.objects.get(pk = id).delete()
-<<<<<<< HEAD
-	return HttpResponseRedirect(reverse(dashboard))
-=======
 	return HttpResponseRedirect(reverse(consultar_equipos))
->>>>>>> 198726ed9fe8dadb3d06ab367b59204903f425f0

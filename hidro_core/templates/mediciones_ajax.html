@@ -1,0 +1,54 @@
+{% for equipo_medicion in equipo_mediciones %}
+    {% if variable_fisica == 'temperatura_aire' %}
+        {% if equipo_medicion.temperatura > umbral.temperatura_aire %}
+            <tr id="{{equipo_medicion.id}}" class="danger">
+        {% else %}
+            <tr id="{{equipo_medicion.id}}" >
+        {% endif %}
+    {% endif %}
+
+    {% if variable_fisica == 'humedad_aire' %}
+        {% if equipo_medicion.humedad > umbral.humedad_aire %}
+            <tr id="{{equipo_medicion.id}}" class="danger">
+        {% else %}
+            <tr id="{{equipo_medicion.id}}" >
+        {% endif %}
+    {% endif %}
+
+    {% if variable_fisica == 'intensidad_luz' %}
+        {% if equipo_medicion.intensidad_luz > umbral.intensidad_luz %}
+            <tr id="{{equipo_medicion.id}}" class="danger">
+        {% else %}
+            <tr id="{{equipo_medicion.id}}" >
+        {% endif %}
+    {% endif %}
+
+            <td>{{equipo_medicion.fecha_creacion|date:"d/m/Y"}}</td>
+            <td>{{equipo_medicion.fecha_creacion|date:"H:i:s"}}</td>
+            {% if variable_fisica == 'temperatura_aire' %}
+                <td>
+                    {% if equipo_medicion.temperatura > umbral.temperatura_aire %}
+                        <span class="label label-danger">{{ equipo_medicion.temperatura }}</span>
+                    {% else %}
+                        {{ equipo_medicion.temperatura }}
+                    {% endif %}
+                </td>
+            {% elif variable_fisica == 'humedad_aire'%}
+                <td>
+                    {% if equipo_medicion.humedad > umbral.humedad_aire %}
+                        <span class="label label-danger">{{ equipo_medicion.humedad }}</span>
+                    {% else %}
+                        {{ equipo_medicion.humedad }}
+                    {% endif %}
+                </td>
+            {% elif variable_fisica == 'intensidad_luz' %}
+                <td>
+                    {% if equipo_medicion.intensidad_luz > umbral.intensidad_luz %}
+                        <span class="label label-danger">{{ equipo_medicion.intensidad_luz }}</span>
+                    {% else %}
+                        {{ equipo_medicion.intensidad_luz }}
+                    {% endif %}
+                </td>
+            {% endif %}
+    </tr>
+{% endfor %}

@@ -19,11 +19,12 @@
             <div>
                 <div class="row">
                     <div class="form-group">
-                        <form method="GET" action="{% url 'hidro_core.views.dashboard' %}">
+                       <form method="GET" action="{% url 'hidro_core.views.dashboard' %}">
+			<form method="GET" action".">
                             {% csrf_token %}
                             <label class="col-md-1 control-label" for="text-field">Nombre: </label>
                             <div class="col-sm-3">
-                                {{form_buscar.nombre}}
+                                {{ form_buscar.nombre }}
                             </div>
                             
                              <div class="col-sm-2">

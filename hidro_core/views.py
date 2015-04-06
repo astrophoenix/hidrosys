@@ -122,6 +122,7 @@ def medicionesxequipoactual(request, id = None):
 @login_required
 def graficasxequipo(request, id = None):
 	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+	usuario = request.user.username
 	parametros = {"equipo_mediciones": equipo_mediciones, "usuario" : usuario}
 	return render_to_response('graficas_estadisticas.html',parametros, context_instance=RequestContext(request))
 	

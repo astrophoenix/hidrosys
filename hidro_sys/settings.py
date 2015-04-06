@@ -1,6 +1,5 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import locale
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
@@ -11,19 +10,13 @@ SECRET_KEY = 't03-&np((8a_9%fegm2qrulo!ulok&2drn2b%s6d8%ll4+@j9q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-LOCALE_ALL_CONFIG = 'es_EC.UTF-8'
-LOCALE_NUMERIC_CONFIG = 'en_US.UTF-8'
-
-
-locale.setlocale(locale.LC_ALL,(LOCALE_ALL_CONFIG))
-locale.setlocale(locale.LC_NUMERIC, LOCALE_NUMERIC_CONFIG)
-locale.setlocale(locale.LC_MONETARY, LOCALE_NUMERIC_CONFIG)
 
 DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['104.236.0.177']
+ALLOWED_HOSTS = ['*']
 
 ADMINS = (
      ('Gabriel Romero', 'galexanderomero24@gmail.com'),

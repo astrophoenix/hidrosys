@@ -133,7 +133,7 @@ def medicionesxequipo(request, id = None, variable_fisica=None):
 	    equipo_mediciones = paginator.page(paginator.num_pages)
 
 	equipo_mediciones_ultimas = equipo_mediciones[:3]
-	titulo_modulo = "Mediciones " + str(equipo_mediciones[0].equipo.nombre)
+	titulo_modulo = "Mediciones "
 	usuario = request.user.username
 	parametros = {"titulo_modulo": titulo_modulo, "usuario" : usuario, "variable_fisica" : variable_fisica, "equipo_mediciones": equipo_mediciones, "equipo": equipo}
 	return render_to_response('mediciones.html',parametros, context_instance=RequestContext(request))
@@ -142,8 +142,9 @@ def medicionesxequipo(request, id = None, variable_fisica=None):
 @login_required
 def medicionesxequipo_ajax(request, id = None):
 	equipo = Equipo.objects.get(pk = id)
-	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
+	equipo_mediciones_list = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')
 	variable_fisica = request.GET['variable_fisica']
+	equipo_mediciones = equipo_mediciones_list[:10]
 	umbrales = UmbralMedidaFisica.objects.all()
 	umbral = {
 		"temperatura_aire" : umbrales[0].umbral,

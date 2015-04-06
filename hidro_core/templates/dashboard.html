@@ -59,7 +59,9 @@
            {% csrf_token %}
                 <ul class="nav">
                     <!-- Main menu -->
-                    
+                    <li><a href="{% url 'hidro_core.views.dashboard' %}">
+                      <i class="glyphicon glyphicon-home"></i>Panel</a>
+                    </li>
                     <!-- <li><a href="calendar.html"><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
                     <li class="current"><a href="stats.html"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>
                     <li><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
@@ -87,7 +89,7 @@
 					</div>
 					<div class="content-box-large box-with-header">
 						<p class="text-center">
-							<input id="knob_temp_mar" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150">
+							<input id="knob_temp_mar" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
 						</p>
             <div class="row">
               <div class="text-center">
@@ -106,7 +108,7 @@
 						<p class="text-center">
 						  <!--<input type="text" value="75" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-bgColor="#c4e9aa" data-width="150">-->
 
-              <input id="knob_temp_aire" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150">
+              <input id="knob_temp_aire" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
             </p>
             <div class="row">
               <div class="text-center">
@@ -124,7 +126,7 @@
 						<p class="text-center">
 						<!-- <input type="text" value="85" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#b85e80" data-bgColor="#f8d2e0" data-width="150">-->
 
-            <input id="knob_hum_aire" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150">
+            <input id="knob_hum_aire" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
           </p>
             <div class="row">
               <div class="text-center">
@@ -141,7 +143,7 @@
 					</div>
 					<div class="content-box-large box-with-header">
 						<p class="text-center">
-						<input id="knob_luz" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150">
+						<input id="knob_luz" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
           </p>
             <div class="row">
               <div class="text-center">
@@ -219,9 +221,9 @@
               $(variable_fisica).val(valor_medicion).trigger('change');
 
               if (valor_medicion >= umbral){
-                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#b85e80" });
+                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#b85e80", "readOnly": true });
               }else{
-                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#8ac368" });
+                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#8ac368", "readOnly": true });
               }
               
             },

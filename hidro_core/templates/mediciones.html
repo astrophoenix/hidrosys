@@ -1,45 +1,165 @@
 {% extends "base.html" %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}vendors/morris/morris.css">
+{% endblock %}
+
 {% block content %}
-    <div id="tabla_mediciones">
-        <div class="table-responsive">
-            <table class="table">
+    <div class="row">
+        <div class="content-box-large">
+            <div class="panel-heading">
+                {% if variable_fisica == 'temperatura_aire' %}
+                    <div class="text-center"><h3>Temperatura Aire vs Tiempo</h3></div>
+                {% elif variable_fisica == 'humedad_aire'%}
+                    <div class="text-center"><h3>Humedad vs Tiempo</h3></div>
+                {% elif variable_fisica == 'intensidad_luz'%}
+                    <div class="text-center"><h3>Intensidad Luz vs Tiempo</h3></div>
+                {% endif %}
+            </div>
+
+            <div class="panel-body">
+                <div id="grafica" style="height: 230px;"></div>
+                </div>
+            </div>
+    </div>
+    <div class="row">
+        <div class="panel-title"><h3>Registros</h3></div>
+        <hr>
+        
+        <div class="panel-body">
+        <div id="tabla_mediciones">
+            <table class="table table-responsive">
               <thead>
                 <th>Fecha</th>
                 <th>Hora</th>
-                <th>Temperatura (°C)</th>
-                <th>Humedad (%)</th>
-                <th>Intensidad Luz(%)</th>
+                {% if variable_fisica == 'temperatura_aire' %}
+                    <th>Temperatura (°C)</th>
+                {% elif variable_fisica == 'humedad_aire'%}
+                    <th>Humedad (%)</th>
+                {% elif variable_fisica == 'intensidad_luz'%}
+                    <th>Intensidad Luz(%)</th>
+                {% endif %}
               </thead>
-              <tbody>
-                {% for equipo_medicion in equipo_mediciones %}
-                    <tr id="{{equipo_medicion.id}}">
-                        <td>{{equipo_medicion.fecha_creacion|date:"d/m/Y"}}</td>
-                        <td>{{equipo_medicion.fecha_creacion|date:"H:i:s"}}</td>
-                        <td>
-                            {% if equipo_medicion.temperatura > 10 %}
-                                <span class="label label-danger">{{ equipo_medicion.temperatura }}</span>
-                            {% else %}
-                                {{ equipo_medicion.temperatura }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if equipo_medicion.humedad > 1 %}
-                                <span class="label label-danger">{{ equipo_medicion.humedad }}</span>
-                            {% else %}
-                                {{ equipo_medicion.humedad }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if equipo_medicion.intensidad_luz > 3 %}
-                                <span class="label label-danger">{{ equipo_medicion.intensidad_luz }}</span>
-                            {% else %}
-                                {{ equipo_medicion.intensidad_luz }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
+              <tbody id="data_mediciones">
+                
               </tbody>
             </table>
+            
+            {% comment %}<ul class="pager wizard">
+                    {% if equipo_mediciones.has_previous %}
+                        <li class="previous disabled">
+                            <a href="?page={{ equipo_mediciones.previous_page_number }}" class="previous">Anterior</a>
+                        </li>
+                    {% endif %}
+
+                    <span class="current">
+                        Página {{ equipo_mediciones.number }} de {{ equipo_mediciones.paginator.num_pages }}
+                    </span>
+
+                    {% if equipo_mediciones.has_next %}
+                        <li class="next"><a href="?page={{ equipo_mediciones.next_page_number }}" class="next">Siguiente</a>
+                        </li>
+                        
+                    {% endif %}
+            </ul>{% endcomment %}
+        </div>
         </div>
     </div>
+    <input type="hidden" id="variable_fisica" name="variable_fisica" value="{{ variable_fisica }}" >
 {% endblock %}
+{% block extra_js %}
+    <script src="{{ STATIC_URL }}vendors/jquery.knob.js"></script>
+    <script src="{{ STATIC_URL }}vendors/raphael-min.js"></script>
+    <script src="{{ STATIC_URL }}vendors/morris/morris.min.js"></script>
+
+    <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.js"></script>
+    <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.categories.js"></script>
+    <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.pie.js"></script>
+    <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.time.js"></script>
+    <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.stack.js"></script>
+    <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.resize.js"></script>
+
+    
+    <script src="{{ STATIC_URL }}js/stats.js"></script>
+
+
+    <script type="text/javascript">
+        var obj_mediciones = {
+
+            init : function ()
+            {
+                obj_mediciones.medicionesxequipo();
+                setInterval(obj_mediciones.medicionesxequipo, 3000);
+                obj_mediciones.obtener_datos_medidos_equipo_grafica();
+                setInterval(obj_mediciones.obtener_datos_medidos_equipo_grafica, 3000);
+            },
+
+            medicionesxequipo : function()
+            {
+                var url_view = "{% url 'hidro_core.views.medicionesxequipo_ajax' equipo.id %}";
+                var variable_fisica = $("#variable_fisica").val();
+                var params = { variable_fisica : variable_fisica };
+                $.ajax({
+                    url : url_view,
+                    type : "GET",
+                    data: params,
+                    success : function(data)
+                    {
+                      $("#data_mediciones").html(data);
+                    },
+
+                    error : function(xhr,errmsg,err) {
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the 
+                    }
+                });
+            },
+
+            obtener_datos_medidos_equipo_grafica : function()
+            {
+                var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' equipo.id %}";
+                $.ajax({
+                    url : url_view,
+                    type : "GET",
+                    
+                    success : function(data)
+                    {
+                        $("#grafica").html(" ");
+                        var tax_data = [];
+                        for (var i = 0; i < data.length; i++) {
+                          var date = new Date(data[i].fields.fecha_creacion);
+                          var fecha_creacion = date.getTime();
+                          var temperatura = data[i].fields.temperatura;
+                          // var humedad = data[i].fields.humedad;
+                          // var intensidad_luz = data[i].fields.intensidad_luz;
+                          
+                          tax_data.push({
+                            fecha_creacion:fecha_creacion,
+                            temperatura: temperatura, 
+                            // humedad: humedad, 
+                            // intensidad_luz: intensidad_luz,
+                          });
+                          
+                        };
+
+                        Morris.Line({
+                            element: 'grafica',
+                            data: tax_data,
+                            xkey: 'fecha_creacion',
+                            xLabels: "hora",
+                            ykeys: ['temperatura'],
+                            labels: ['Temperatura']
+                            //ykeys: ['temperatura', 'humedad', 'intensidad_luz'],
+                            //labels: ['Temperatura', 'Humedad', 'Luz']
+                        });
+                    }
+                });
+            },
+        };
+            
+        $(function(){
+            obj_mediciones.init();
+        }); 
+    </script>
+{% endblock %}
+
+
+

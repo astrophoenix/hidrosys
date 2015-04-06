@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bootstrap Admin Theme v3</title>
+    <title>Mediciones Equipo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- jQuery UI -->
     <link href="https://code.jquery.com/ui/1.10.3/themes/redmond/jquery-ui.css" rel="stylesheet" media="screen">
@@ -27,10 +27,12 @@
              <div class="col-md-5">
                 <!-- Logo -->
                 <div class="logo">
-                   <h1><a href="index.html">Bootstrap Admin Theme</a></h1>
+                   <h1><a href="#">Hydro</a></h1>
                 </div>
              </div>
+
              <div class="col-md-5">
+              {% comment %}
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="input-group form">
@@ -40,23 +42,22 @@
                          </span>
                     </div>
                   </div>
+             </div>{% endcomment %}
                 </div>
-             </div>
              <div class="col-md-2">
-                <div class="navbar navbar-inverse" role="banner">
-                    <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
-                      <ul class="nav navbar-nav">
-                        <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account <b class="caret"></b></a>
-                          <ul class="dropdown-menu animated fadeInUp">
-                            <li><a href="profile.html">Profile</a></li>
-                            <li><a href="login.html">Logout</a></li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </nav>
-                </div>
-             </div>
+                  <div class="navbar navbar-inverse" role="banner">
+                      <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
+                        <ul class="nav navbar-nav">
+                          <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ usuario }}<b class="caret"></b></a>
+                            <ul class="dropdown-menu animated fadeInUp">
+                              <li><a href="#">Salir</a></li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </nav>
+                  </div>
+               </div>
           </div>
        </div>
   </div>
@@ -68,13 +69,15 @@
            {% csrf_token %}
                 <ul class="nav">
                     <!-- Main menu -->
-                    <li><a href="index.html"><i class="glyphicon glyphicon-home"></i> Dashboard</a></li>
+                    <li><a href="{% url 'hidro_core.views.dashboard' %}">
+                      <i class="glyphicon glyphicon-list-alt"></i>Equipos</a></li>
                     <!-- <li><a href="calendar.html"><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
                     <li class="current"><a href="stats.html"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>
                     <li><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
                     <li><a href="buttons.html"><i class="glyphicon glyphicon-record"></i> Buttons</a></li>
                     <li><a href="editors.html"><i class="glyphicon glyphicon-pencil"></i> Editors</a></li>
                     <li><a href="forms.html"><i class="glyphicon glyphicon-tasks"></i> Forms</a></li> -->
+                    {% comment %}
                     <li class="submenu">
                          <a href="#">
                             <i class="glyphicon glyphicon-list"></i> Pages
@@ -85,7 +88,7 @@
                             <li><a href="login.html">Login</a></li>
                             <li><a href="signup.html">Signup</a></li>
                         </ul>
-                    </li>
+                    </li>{% endcomment %}
                 </ul>
              </div>
       </div>
@@ -107,12 +110,14 @@
 
         <div class="content-box-large">
           <div class="panel-heading">
-          <div class="panel-title">Temperatura vs Tiempo</div>
+          <div class="panel-title">Variables vs Tiempo</div>
           
-          <div class="panel-options">
-            <a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
-            <a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
-          </div>
+          {% comment %}
+            <div class="panel-options">
+              <a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+              <a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+            </div>
+          {% endcomment %}
         </div>
           <div class="panel-body">
             <div id="hero-graph" style="height: 230px;"></div>
@@ -289,7 +294,7 @@
                       var temperatura = data[i].fields.temperatura;
                       var humedad = data[i].fields.humedad;
                       var intensidad_luz = data[i].fields.intensidad_luz;
-                      //console.info(fecha_creacion)
+                      
                       tax_data.push({
                         fecha_creacion:fecha_creacion,
                         temperatura: temperatura, 

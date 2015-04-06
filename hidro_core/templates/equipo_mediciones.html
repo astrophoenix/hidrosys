@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="row">
+    <div class="col-sm-2">
+
+        <button id="btn_finalizar" class="btn btn-danger"><i class="glyphicon glyphicon-stop"></i></button>
+        <button id="btn_iniciar" class="btn btn-success"><i class="glyphicon glyphicon-play"></i></button>
+    </div>
+</div>
+
 <div class="row">{% comment %}
     <div class="col-sm-2">
         Tiempo real
@@ -90,6 +98,22 @@
               </tbody>
             </table>
         </div>
+        <ul class="pager wizard">
+                {% if equipo_mediciones.has_previous %}
+                    <li class="previous disabled">
+                        <a href="?page={{ equipo_mediciones.previous_page_number }}" class="previous">Anterior</a>
+                    </li>
+                {% endif %}
+
+                <span class="current">
+                    Página {{ equipo_mediciones.number }} de {{ equipo_mediciones.paginator.num_pages }}
+                </span>
+
+                {% if equipo_mediciones.has_next %}
+                    <li class="next"><a href="?page={{ equipo_mediciones.next_page_number }}" class="next">Siguiente</a></li>
+                    
+                {% endif %}
+        </ul>
     </div>
 </div>
 {% endblock %}
@@ -98,23 +122,31 @@
     <!--<script src="{{ STATIC_URL }}js/equipos.js"></script>       -->
     <script type="text/javascript">
         var equipo = {
-
-            init : function()
-            {
-                //(btn_buscar_mediciones).click(buscar_mediciones);
-                timer = setInterval( "equipo.actualizar_automaticamente()", 3000);
-                $("#parar_tr").click(function() { clearInterval(timer); timer = null});
-            },
+            timer : null,
 
             actualizar_automaticamente : function()
             {
                 var url = "{% url 'hidro_core.views.medicionesxequipoactual' equipo.id %}";
-                $('#contenido_mediciones').fadeOut("slow").load(url + ' #tabla_mediciones').fadeIn("slow");
+                $('#contenido_mediciones').load(url + ' #tabla_mediciones');
+                //$('#contenido_mediciones').fadeOut("slow").load(url + ' #tabla_mediciones').fadeIn("slow");
 
             },
 
-                       
+            iniciar : function() {
+                equipo.actualizar_automaticamente();
+                equipo.timer = setInterval(equipo.actualizar_automaticamente, 3000);
+            },
 
+            finalizar : function() {
+                clearTimeout(equipo.timer);
+            },
+            
+            init : function()
+            {
+                //equipo.iniciar();
+                $("#btn_iniciar").click(equipo.iniciar);
+                $("#btn_finalizar").click(equipo.finalizar);
+            },
         };
 
         $(function(){

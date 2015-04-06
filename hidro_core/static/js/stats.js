@@ -197,7 +197,7 @@ $(function() {
 
 
 // Build jQuery Knobs
-$(".knob").knob();
+
 
 function labelFormatter(label, series) {
     return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";

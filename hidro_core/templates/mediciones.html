@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="row">
-        <div class="content-box-large">
+        <!-- <div class="content-box-large"> -->
             <div class="panel-heading">
                 {% if variable_fisica == 'temperatura_aire' %}
                     <div class="text-center"><h3>Temperatura Aire vs Tiempo</h3></div>
@@ -16,15 +16,40 @@
                 {% endif %}
             </div>
 
-            <div class="panel-body">
-                <div id="grafica" style="height: 230px;"></div>
+            <!-- <div class="panel-body">-->
+                <!-- <div id="grafica" style="height: 230px;"></div>
+                </div>-->
+            <!-- 4196668826876     -->
+
+            <!--34313936363638383236383736   -->
+            <!--</div>-->
+            <!--</div>-->
+            <div id="grafica"></div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="panel-title">
+            <h3>Registros</h3>
+            Los datos se actualizan cada X segundos.
+        </div>
+        <div class="panel-heading">
+            <!-- <div class="panel-title">Registros</div> -->
+            
+            <div class="panel-options">
+                <div class="btn-group">
+                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">
+                        <i class="glyphicon glyphicon-download"></i>
+                        Exportar 
+                        <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu">
+                      <!-- <li><a href="#"><i class="fa fa-camera-retro fa-lg"></i>Excel</a></li> -->
+                      <li><a id="btn_excel" target ="_blank" href="{% url 'hidro_core.views.exportar_excel' equipo.id %}?variable_fisica={{ variable_fisica }}"><i class="fa fa-file-excel-o fa-lg"></i> Excel</a></li>
+                      <li><a id="btn_pdf" href="javascript:void(0);"><i class="fa fa-file-pdf-o fa-lg"></i> PDF</a></li>
+                    </ul>
                 </div>
             </div>
-    </div>
-    <div class="row">
-        <div class="panel-title"><h3>Registros</h3></div>
-        <hr>
-        
+        </div>
         <div class="panel-body">
         <div id="tabla_mediciones">
             <table class="table table-responsive">
@@ -146,13 +171,16 @@
                             xkey: 'fecha_creacion',
                             xLabels: "hora",
                             ykeys: ['temperatura'],
-                            labels: ['Temperatura']
+                            labels: ['Temperatura', 'XXXXX']
                             //ykeys: ['temperatura', 'humedad', 'intensidad_luz'],
                             //labels: ['Temperatura', 'Humedad', 'Luz']
                         });
                     }
                 });
             },
+
+
+            
         };
             
         $(function(){

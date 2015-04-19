@@ -20,6 +20,9 @@ from hidro_core.forms import EquipoForm, BuscarEquipoForm
 #from django.core.mail import send_mail
 import json
 from django.core import serializers
+from datetime import datetime, date
+import xlwt
+
 
 # Create your views here.
 def login_usuario(request):
@@ -214,6 +217,72 @@ def obtener_umbrales(request, id = None):
 	json_umbrales = serializers.serialize("json", umbrales)
 	return HttpResponse(json_umbrales, content_type='application/json')
 
+
+@login_required
+def exportar_excel(request, id):
+	variable_fisica = request.GET['variable_fisica']
+	if variable_fisica =="temperatura_aire":
+		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion','temperatura')
+		key = 'temperatura'
+		header_variable_fisica = 'Tempertura [°C]'		
+	elif variable_fisica =="humedad_aire":
+		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion', 'humedad')
+		key = 'humedad'
+		header_variable_fisica = 'Humedad [%]'
+	elif variable_fisica =="intensidad_luz":
+		key = 'intensidad_luz'
+		header_variable_fisica = 'Intensidad Luz [%]'
+		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion', 'intensidad_luz')
+	
+	book = xlwt.Workbook(encoding='utf8')
+	sheet = book.add_sheet('my_sheet')   
+	default_style = xlwt.Style.default_style
+
+	# Adding style for cell
+	# Create Alignment
+	alignment = xlwt.Alignment()
+	# horz May be: HORZ_GENERAL, HORZ_LEFT, HORZ_CENTER, HORZ_RIGHT,     
+	# HORZ_FILLED, HORZ_JUSTIFIED, HORZ_CENTER_ACROSS_SEL,
+	# HORZ_DISTRIBUTED
+	alignment.horz = xlwt.Alignment.VERT_CENTER
+	# May be: VERT_TOP, VERT_CENTER, VERT_BOTTOM, VERT_JUSTIFIED,
+	# VERT_DISTRIBUTED
+	alignment.vert = xlwt.Alignment.VERT_TOP
+	style_cabecera = xlwt.XFStyle() # Create Style
+	style_cabecera.alignment = alignment # Add Alignment to Style
+
+	# font
+	font = xlwt.Font()
+	font.bold = True
+	font.height = 200
+	sheet.col(2).width = 256 * len(header_variable_fisica)
+	style_cabecera.font = font
+
+	# pattern = xlwt.Pattern()
+	# pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+	# pattern.pattern_fore_colour = xlwt.Style.colour_map['dark_purple']
+	# style.pattern = pattern
+
+	# Cabecera del excel
+	header = ['Fecha', 'Hora', header_variable_fisica]
+	for hcol, hcol_data in enumerate(header): # [(0,'Header 1'), (1, 'Header 2'), (2,'Header 3'), (3,'Header 4')]
+		sheet.write(0, hcol, hcol_data, style_cabecera)
+	data = []
+	for d in list(equipo_mediciones):
+		fecha = d['fecha_creacion'].strftime("%d/%m/%Y")
+		hora = d['fecha_creacion'].strftime("%H:%M:%S")
+		tipo_variable = d[key]
+		data.append([fecha, hora, tipo_variable])
+		
+	for row, row_data in enumerate(data, start=1): # start from row no.1
+	   	for col, col_data in enumerate(row_data):
+			sheet.write(row, col, col_data, default_style)
+
+	response = HttpResponse(content_type='application/vnd.ms-excel')
+	response['Content-Disposition'] = 'attachment; filename=my_data.xls'
+	book.save(response)
+	return response
+	
 
 @login_required
 def registrar_obtener_equipo(request, id = None):

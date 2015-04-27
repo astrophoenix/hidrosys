@@ -24,5 +24,5 @@ urlpatterns = patterns('',
     url (r'^obtener_umbrales/$', 'hidro_core.views.obtener_umbrales'),
     url (r'^eliminar_equipo/(?P<id>\d+)/$', 'hidro_core.views.eliminar_equipo'),
     url (r'^exportar_excel/(?P<id>\d+)/$', 'hidro_core.views.exportar_excel'),
-    
+    url (r'^exportar_pdf/(?P<id>\d+)/$', 'hidro_core.views.exportar_pdf'),
 )

@@ -44,8 +44,8 @@
                     </button>
                     <ul role="menu" class="dropdown-menu">
                       <!-- <li><a href="#"><i class="fa fa-camera-retro fa-lg"></i>Excel</a></li> -->
-                      <li><a id="btn_excel" target ="_blank" href="{% url 'hidro_core.views.exportar_excel' equipo.id %}?variable_fisica={{ variable_fisica }}"><i class="fa fa-file-excel-o fa-lg"></i> Excel</a></li>
-                      <li><a id="btn_pdf" href="javascript:void(0);"><i class="fa fa-file-pdf-o fa-lg"></i> PDF</a></li>
+                      <li><a id="btn_excel" target ="_blank" target="_blank" href="{% url 'hidro_core.views.exportar_excel' equipo.id %}?variable_fisica={{ variable_fisica }}"><i class="fa fa-file-excel-o fa-lg"></i> Excel</a></li>
+                      <li><a id="btn_pdf" target="_blank" href="{% url 'hidro_core.views.exportar_pdf' equipo.id %}?variable_fisica={{ variable_fisica }}"><i class="fa fa-file-pdf-o fa-lg"></i> PDF</a></li>
                     </ul>
                 </div>
             </div>

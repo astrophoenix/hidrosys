@@ -22,7 +22,12 @@ import json
 from django.core import serializers
 from datetime import datetime, date
 import xlwt
-
+from io import BytesIO
+from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import Table
 
 # Create your views here.
 def login_usuario(request):
@@ -193,7 +198,6 @@ def medicionesxequipoactual(request, id = None):
 		}
 		return render_to_response('mediciones.html',parametros, context_instance=RequestContext(request))
 	
-	
 	return HttpResponseRedirect(reverse(consultar_equipos))
 
 @login_required
@@ -221,22 +225,28 @@ def obtener_umbrales(request, id = None):
 @login_required
 def exportar_excel(request, id):
 	variable_fisica = request.GET['variable_fisica']
+
+	umbrales = UmbralMedidaFisica.objects.all()
 	if variable_fisica =="temperatura_aire":
 		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion','temperatura')
 		key = 'temperatura'
+		umbral_variable_fisica =  umbrales[0].umbral
 		header_variable_fisica = 'Tempertura [°C]'		
 	elif variable_fisica =="humedad_aire":
 		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion', 'humedad')
 		key = 'humedad'
+		umbral_variable_fisica =  umbrales[1].umbral
 		header_variable_fisica = 'Humedad [%]'
 	elif variable_fisica =="intensidad_luz":
 		key = 'intensidad_luz'
 		header_variable_fisica = 'Intensidad Luz [%]'
+		umbral_variable_fisica =  umbrales[3].umbral
 		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion', 'intensidad_luz')
+	
 	
 	book = xlwt.Workbook(encoding='utf8')
 	sheet = book.add_sheet('my_sheet')   
-	default_style = xlwt.Style.default_style
+	formato_estilo_default = xlwt.Style.default_style
 
 	# Adding style for cell
 	# Create Alignment
@@ -248,25 +258,26 @@ def exportar_excel(request, id):
 	# May be: VERT_TOP, VERT_CENTER, VERT_BOTTOM, VERT_JUSTIFIED,
 	# VERT_DISTRIBUTED
 	alignment.vert = xlwt.Alignment.VERT_TOP
-	style_cabecera = xlwt.XFStyle() # Create Style
-	style_cabecera.alignment = alignment # Add Alignment to Style
+	formato_estilo_cabecera = xlwt.XFStyle() # Create Style
+	formato_estilo_cabecera.alignment = alignment # Add Alignment to Style
 
 	# font
 	font = xlwt.Font()
 	font.bold = True
 	font.height = 200
 	sheet.col(2).width = 256 * len(header_variable_fisica)
-	style_cabecera.font = font
+	formato_estilo_cabecera.font = font
 
-	# pattern = xlwt.Pattern()
-	# pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-	# pattern.pattern_fore_colour = xlwt.Style.colour_map['dark_purple']
-	# style.pattern = pattern
+	formato_estilo_alerta = xlwt.XFStyle() # Create Style
+	pattern = xlwt.Pattern()
+	pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+	pattern.pattern_fore_colour = xlwt.Style.colour_map['red']
+	formato_estilo_alerta.pattern = pattern
 
 	# Cabecera del excel
 	header = ['Fecha', 'Hora', header_variable_fisica]
 	for hcol, hcol_data in enumerate(header): # [(0,'Header 1'), (1, 'Header 2'), (2,'Header 3'), (3,'Header 4')]
-		sheet.write(0, hcol, hcol_data, style_cabecera)
+		sheet.write(0, hcol, hcol_data, formato_estilo_cabecera)
 	data = []
 	for d in list(equipo_mediciones):
 		fecha = d['fecha_creacion'].strftime("%d/%m/%Y")
@@ -274,15 +285,91 @@ def exportar_excel(request, id):
 		tipo_variable = d[key]
 		data.append([fecha, hora, tipo_variable])
 		
+	
 	for row, row_data in enumerate(data, start=1): # start from row no.1
+		formato = formato_estilo_default
 	   	for col, col_data in enumerate(row_data):
-			sheet.write(row, col, col_data, default_style)
+	   		if col == 2:
+	   			if col_data > umbral_variable_fisica:
+					formato = formato_estilo_alerta	   			   			
+			sheet.write(row, col, col_data, formato)
 
+	fecha_actual = datetime.now().date()
+	equipo = Equipo.objects.get(pk = id)
+	nombre_archivo = equipo.nombre.replace(" ", "") + "_" + str(fecha_actual) + ".xls"
 	response = HttpResponse(content_type='application/vnd.ms-excel')
-	response['Content-Disposition'] = 'attachment; filename=my_data.xls'
+	response['Content-Disposition'] = 'attachment; filename='+nombre_archivo
 	book.save(response)
 	return response
+
+
+@login_required
+def exportar_pdf(request, id):
 	
+	variable_fisica = request.GET['variable_fisica']
+
+	umbrales = UmbralMedidaFisica.objects.all()
+	if variable_fisica =="temperatura_aire":
+		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion','temperatura')
+		key = 'temperatura'
+		umbral_variable_fisica =  umbrales[0].umbral
+		header_variable_fisica = 'Tempertura [°C]'		
+	elif variable_fisica =="humedad_aire":
+		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion', 'humedad')
+		key = 'humedad'
+		umbral_variable_fisica =  umbrales[1].umbral
+		header_variable_fisica = 'Humedad [%]'
+	elif variable_fisica =="intensidad_luz":
+		key = 'intensidad_luz'
+		header_variable_fisica = 'Intensidad Luz [%]'
+		umbral_variable_fisica =  umbrales[3].umbral
+		equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion').values('fecha_creacion', 'intensidad_luz')
+	
+	response = HttpResponse(content_type='application/pdf')
+
+	fecha_actual = datetime.now().date()
+	equipo = Equipo.objects.get(pk = id)
+	pdf_name = equipo.nombre.replace(" ", "") + "_" + str(fecha_actual) + ".pdf"
+
+
+	# la linea 26 es por si deseas descargar el pdf a tu computadora
+	# response['Content-Disposition'] = 'attachment; filename=%s' % pdf_name
+	buff = BytesIO()
+	doc = SimpleDocTemplate(buff,
+	                        pagesize=letter,
+	                        rightMargin=40,
+	                        leftMargin=40,
+	                        topMargin=60,
+	                        bottomMargin=18,
+	                        )
+	mediciones = []
+	styles = getSampleStyleSheet()
+	header = Paragraph("Mediciones", styles['Heading1'])
+	mediciones.append(header)
+	headings = ('Fecha', 'Hora', header_variable_fisica)
+
+
+	data = []
+	for d in list(equipo_mediciones):
+		fecha = d['fecha_creacion'].strftime("%d/%m/%Y")
+		hora = d['fecha_creacion'].strftime("%H:%M:%S")
+		tipo_variable = d[key]
+		data.append([fecha, hora, tipo_variable])
+	#print allclientes
+
+	t = Table([headings] + data)
+	t.setStyle(TableStyle(
+	    [
+	        ('GRID', (0, 0), (3, -1), 1, colors.dodgerblue),
+	        ('LINEBELOW', (0, 0), (-1, 0), 2, colors.darkblue),
+	        ('BACKGROUND', (0, 0), (-1, 0), colors.dodgerblue)
+	    ]
+	))
+	mediciones.append(t)
+	doc.build(mediciones)
+	response.write(buff.getvalue())
+	buff.close()
+	return response
 
 @login_required
 def registrar_obtener_equipo(request, id = None):

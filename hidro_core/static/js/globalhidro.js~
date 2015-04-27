@@ -97,9 +97,7 @@ $(function() {
 // }
 
 //doPlot("right");
-$("#menu_configuracion").click(function(){
-        $("#configuracion_popup").modal('show');
-    });
+
 });
 
 // Morris Bar Chart

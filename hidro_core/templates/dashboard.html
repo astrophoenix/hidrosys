@@ -62,9 +62,13 @@
                     <li><a href="{% url 'hidro_core.views.dashboard' %}">
                       <i class="glyphicon glyphicon-home"></i>Panel</a>
                     </li>
-                    <li><a href="javascript:void(0);" id="menu_configuracion">
+                    <li><a href="{% url 'hidro_core.views.configuracion' %}">
                       <i class="glyphicon glyphicon-wrench"></i> Configuración</a>
                     </li>
+
+                    <!-- <li><a href="javascript:void(0);" id="menu_configuracion">
+                      <i class="glyphicon glyphicon-wrench"></i> Configuración</a>
+                    </li> -->
                     <!-- <li><a href="calendar.html"><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
                     <li class="current"><a href="stats.html"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>
                     <li><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
@@ -76,95 +80,126 @@
       </div>
       <div class="col-md-10">
          <div class="content-box-large" style="diplay:none">
-        <div class="panel-heading">
-          <div class="panel-title"><h3>Mediciones</h3></div>
-          
-          <!--<div class="panel-options">
-            <a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
-            <a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
-          </div>-->
-        </div>
+          <div class="panel-heading">
+            <div class="panel-title"><h3><b>Mediciones</h3></b></div>
+          </div>
           <div class="panel-body">
-            <div class="row">
-				<div class="col-md-3">
-					<div class="content-box-header">
-						<div class="text-center">Temperatura Mar</div>
-					</div>
-					<div class="content-box-large box-with-header">
-						<p class="text-center">
-							<input id="knob_temp_mar" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
-						</p>
-            <div class="row">
-              <div class="text-center">
-                <a href="#" class="btn btn-lg btn-block btn-primary">
-                      <i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+              <div class="row">
+        				<div class="col-md-3">
+        					<div class="content-box-header">
+        						<div class="text-center"><b>Temperatura Mar [°C]<b></div>
+        					</div>
+        					<div class="content-box-large box-with-header">
+        						<p class="text-center">
+        							<input id="knob_temp_mar" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+        						</p>
+                    <div class="row">
+                      <div class="text-center">
+                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'temperatura_mar' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                      </div>
+                    </div>
+        					</div>
+        				</div>
+
+        				<div class="col-md-3">
+        					<div class="content-box-header">
+        						<div class="text-center"><b>Temperatura Aire [°C]<b></div>
+        					</div>
+        					<div class="content-box-large box-with-header">
+        						<p class="text-center">
+        						  <!--<input type="text" value="75" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-bgColor="#c4e9aa" data-width="150">-->
+
+                      <input id="knob_temp_aire" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+                    </p>
+                    <div class="row">
+                      <div class="text-center">
+                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'temperatura_aire' %}" class="btn btn-lg btn-block btn-primary">
+                          <i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                      </div>
+                    </div>
+        					</div>
+        				</div>
+
+        				<div class="col-md-3">
+        					<div class="content-box-header">
+        						<div class="text-center"><b>Humedad Relativa [%]<b></div>
+        					</div>
+        					<div class="content-box-large box-with-header">
+        						<p class="text-center">
+        						<!-- <input type="text" value="85" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#b85e80" data-bgColor="#f8d2e0" data-width="150">-->
+
+                    <input id="knob_hum_aire" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+                  </p>
+                    <div class="row">
+                      <div class="text-center">
+                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'humedad_aire' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                      </div>
+                    </div>
+        					</div>
+        				</div>
+
+        				<div class="col-md-3">
+        					<div class="content-box-header">
+        						<div class="text-center"><b>Radiación Solar [Lux]<b></div>
+        					</div>
+        					<div class="content-box-large box-with-header">
+        						<p class="text-center">
+        						<input id="knob_luz" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+                  </p>
+                    <div class="row">
+                      <div class="text-center">
+                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'intensidad_luz' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                      </div>
+                    </div>
+        					</div>
+        				</div>
               </div>
-            </div>
-					</div>
-            
-				</div>
 
-				<div class="col-md-3">
-					<div class="content-box-header">
-						<div class="text-center">Temperatura Aire</div>
-					</div>
-					<div class="content-box-large box-with-header">
-						<p class="text-center">
-						  <!--<input type="text" value="75" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-bgColor="#c4e9aa" data-width="150">-->
+              <!-- Bloque 2-->
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="content-box-header">
+                    <div class="text-center"><b>Velocidad Viento [m/s]</b></div>
+                  </div>
+                  <div class="content-box-large box-with-header">
+                    <p class="text-center">
+                    <input id="knob_vie" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+                  </p>
+                    <div class="row">
+                      <div class="text-center">
+                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'viento' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-              <input id="knob_temp_aire" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
-            </p>
-            <div class="row">
-              <div class="text-center">
-                <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'temperatura_aire' %}" class="btn btn-lg btn-block btn-primary">
-                  <i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                <div class="col-md-3">
+                  <div class="content-box-header">
+                    <div class="text-center">Brujula [°]</div>
+                  </div>
+                  <div class="content-box-large box-with-header">
+                    <p class="text-center">
+                    <input id="knob_bruj" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+                  </p>
+                    <div class="row">
+                      <div class="text-center">
+                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'compas_mag' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
               </div>
-            </div>
-					</div>
-				</div>
-
-				<div class="col-md-3">
-					<div class="content-box-header">
-						<div class="text-center">Humedad Aire</div>
-					</div>
-					<div class="content-box-large box-with-header">
-						<p class="text-center">
-						<!-- <input type="text" value="85" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#b85e80" data-bgColor="#f8d2e0" data-width="150">-->
-
-            <input id="knob_hum_aire" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
-          </p>
-            <div class="row">
-              <div class="text-center">
-                <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'humedad_aire' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
-              </div>
-            </div>
-					</div>
-
-				</div>
-
-				<div class="col-md-3">
-					<div class="content-box-header">
-						<div class="text-center">Luz </div>
-					</div>
-					<div class="content-box-large box-with-header">
-						<p class="text-center">
-						<input id="knob_luz" type="text" value="0%" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
-          </p>
-            <div class="row">
-              <div class="text-center">
-                <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'intensidad_luz' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
-              </div>
-            </div>
-					</div>
-				</div>
-            </div>
+              
+              <!-- -->
           </div>
         </div>
       </div>
     </div>
 
     <!-- popup configuracion-->
-    <div id="configuracion_popup" class="modal fade">
+    <!-- <div id="configuracion_popup" class="modal fade">
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
@@ -185,7 +220,7 @@
               </div>
           </div>
       </div>
-    </div>
+    </div> -->
     <!-- -->
 
     <footer>
@@ -222,10 +257,13 @@
     <script type="text/javascript">
          var obj_dashboard = {
 
-            ids_knobs : [ "knob_temp_mar", "knob_temp_aire", "knob_hum_aire", "knob_luz"],
-            umbral_temperatura_aire : 0,
-            umbral_humedad_aire : 0,
-            umbral_intensidad_luz : 0,
+            ids_knobs : [ "knob_temp_mar", "knob_temp_aire", "knob_hum_aire", "knob_luz", "knob_vie","knob_acelero","knob_bruj"],
+
+            umbrales_temperatura_mar : [],
+            umbrales_temperatura_aire : [],
+            umbrales_humedad_aire : [],
+            umbrales_intensidad_luz : [],
+            umbrales_viento : [],
 
             init : function ()
             {
@@ -243,15 +281,24 @@
 
             },
 
-            validar_medicion : function (variable_fisica, valor_medicion, umbral)
+            validar_medicion : function (variable_fisica, valor_medicion, rangos_temp_mar)
             {
               variable_fisica = "#" + variable_fisica;
               $(variable_fisica).val(valor_medicion).trigger('change');
 
-              if (valor_medicion >= umbral){
-                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#b85e80", "readOnly": true });
-              }else{
-                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#8ac368", "readOnly": true });
+              var valor_base = rangos_temp_mar[0];
+              var valor_max_verde = rangos_temp_mar[1];
+              var valor_max_amarillo = rangos_temp_mar[2];
+              var valor_max_naranja = rangos_temp_mar[3];
+
+              if (valor_base <= valor_medicion && valor_medicion <= valor_max_verde){ // Rango Estado Verde
+                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#5cb85c", "readOnly": true });
+              }else if (valor_max_verde < valor_medicion && valor_medicion <= valor_max_amarillo){ // Rango Estado Amarillo
+                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#F4FA58", "readOnly": true });
+              }else if (valor_max_amarillo < valor_medicion && valor_medicion <= valor_max_naranja){ // Rango Estado Naranja
+                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#f0ad4e", "readOnly": true });
+              }else{ // Rango Estado Rojo
+                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#d9534f", "readOnly": true });
               }
               
             },
@@ -265,20 +312,30 @@
                     success : function(data)
                     {
                         var temp_aire = parseFloat(data[0].fields.temperatura);
+                        var temp_mar = parseFloat(data[0].fields.temperatura_agua);
+                        var viento = parseFloat(data[0].fields.viento);
                         var hum_aire = parseFloat(data[0].fields.humedad);
                         var inten_luz = parseFloat(data[0].fields.intensidad_luz);
                         
+                        //medición temperatura agua
+                        var rangos_temp_mar = obj_dashboard.umbrales_temperatura_mar;
+                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[0], temp_mar, rangos_temp_mar);
+                        
                         //medición temperatura aire
-                        var umbral_temp_aire = obj_dashboard.umbral_temperatura_aire;
-                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[1], temp_aire, umbral_temp_aire);
+                        var rangos_temp_aire = obj_dashboard.umbrales_temperatura_aire;
+                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[1], temp_aire, rangos_temp_aire);
 
                         //medición humedad aire
-                        var umbral_hum_aire = obj_dashboard.umbral_humedad_aire;
-                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[2], hum_aire, umbral_hum_aire);
+                        var rangos_hum_aire = obj_dashboard.umbrales_humedad_aire;
+                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[2], hum_aire, rangos_hum_aire);
 
                         //medición intensidad luz
-                        var umbral_intensidad_luz = obj_dashboard.umbral_intensidad_luz;
-                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[3], inten_luz, umbral_intensidad_luz);
+                        var rangos_intensidad_luz = obj_dashboard.umbrales_intensidad_luz;
+                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[3], inten_luz, rangos_intensidad_luz);
+
+                        //medición viento
+                        var rangos_viento = obj_dashboard.umbrales_viento;
+                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento);
 
                     },
 
@@ -298,9 +355,36 @@
                     type : "GET",
                     success : function(data)
                     {
-                      obj_dashboard.umbral_temperatura_aire = parseFloat(data[0].fields.umbral);
-                      obj_dashboard.umbral_humedad_aire = parseFloat(data[1].fields.umbral);
-                      obj_dashboard.umbral_intensidad_luz = parseFloat(data[3].fields.umbral);
+                        var i = 0;
+                        obj_dashboard.umbrales_temperatura_aire.push(parseFloat(data[i].fields.umbral_base));
+                        obj_dashboard.umbrales_temperatura_aire.push(parseFloat(data[i].fields.umbral_verde));
+                        obj_dashboard.umbrales_temperatura_aire.push(parseFloat(data[i].fields.umbral_amarillo));
+                        obj_dashboard.umbrales_temperatura_aire.push(parseFloat(data[i].fields.umbral_naranja));
+                        
+                        i = 1;
+                        obj_dashboard.umbrales_humedad_aire.push(parseFloat(data[i].fields.umbral_base));
+                        obj_dashboard.umbrales_humedad_aire.push(parseFloat(data[i].fields.umbral_verde));
+                        obj_dashboard.umbrales_humedad_aire.push(parseFloat(data[i].fields.umbral_amarillo));
+                        obj_dashboard.umbrales_humedad_aire.push(parseFloat(data[i].fields.umbral_naranja));
+
+                        i = 2;
+                        obj_dashboard.umbrales_temperatura_mar.push(parseFloat(data[i].fields.umbral_base));
+                        obj_dashboard.umbrales_temperatura_mar.push(parseFloat(data[i].fields.umbral_verde));
+                        obj_dashboard.umbrales_temperatura_mar.push(parseFloat(data[i].fields.umbral_amarillo));
+                        obj_dashboard.umbrales_temperatura_mar.push(parseFloat(data[i].fields.umbral_naranja));
+
+                        i = 3;
+                        obj_dashboard.umbrales_intensidad_luz.push(parseFloat(data[i].fields.umbral_base));
+                        obj_dashboard.umbrales_intensidad_luz.push(parseFloat(data[i].fields.umbral_verde));
+                        obj_dashboard.umbrales_intensidad_luz.push(parseFloat(data[i].fields.umbral_amarillo));
+                        obj_dashboard.umbrales_intensidad_luz.push(parseFloat(data[i].fields.umbral_naranja));
+
+                        i = 4;
+                        obj_dashboard.umbrales_viento.push(parseFloat(data[i].fields.umbral_base));
+                        obj_dashboard.umbrales_viento.push(parseFloat(data[i].fields.umbral_verde));
+                        obj_dashboard.umbrales_viento.push(parseFloat(data[i].fields.umbral_amarillo));
+                        obj_dashboard.umbrales_viento.push(parseFloat(data[i].fields.umbral_naranja));
+
                     },
 
                     // handle a non-successful response
@@ -309,10 +393,6 @@
                     }
                 });
             },
-
-
-
-
 
          };
         

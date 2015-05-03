@@ -32,7 +32,7 @@
     <link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
 
     <link href="{{ STATIC_URL }}css/stats.css" rel="stylesheet">
-
+    <link href="{{ STATIC_URL }}css/global_hydro.css" rel="stylesheet">
 
     {% block extra_css %}
     {% endblock %}
@@ -84,7 +84,7 @@
                     <li><a href="{% url 'hidro_core.views.dashboard' %}">
                       <i class="glyphicon glyphicon-home"></i>Panel</a>
                     </li>
-                    <li><a href="javascript:void(0);" id="menu_configuracion">
+                    <li><a href="{% url 'hidro_core.views.configuracion' %}">
                       <i class="glyphicon glyphicon-wrench"></i> Configuración</a>
                     </li>
                     <!--<li class="current"><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
@@ -109,7 +109,7 @@
 
                         
             <div class="content-box-large">
-                <h2>{% if titulo_modulo %}{{titulo_modulo}}{% endif %}</h2>
+                <h2><b>{% if titulo_modulo %}{{titulo_modulo}}{% endif %}</b></h2>
                 <hr>
                 <div class="panel-body">
                     {% block content %}

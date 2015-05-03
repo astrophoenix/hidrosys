@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
 from hidro_core.models import Equipo, EquipoMedicion, UmbralMedidaFisica
-from hidro_core.forms import EquipoForm, BuscarEquipoForm
+from hidro_core.forms import EquipoForm, BuscarEquipoForm, UmbralForm
 #from django.core.mail import send_mail
 import json
 from django.core import serializers
@@ -28,6 +28,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Table
+from django.forms.formsets import formset_factory
 
 # Create your views here.
 def login_usuario(request):
@@ -89,6 +90,77 @@ def dashboard(request):
 	}
 	return render_to_response('dashboard.html',parametros, context_instance=RequestContext(request))
 
+
+# @login_required
+# def configuracion(request, id = None):
+# 	titulo_modulo = "Configuraciones "
+# 	usuario = None
+# 	formset = None
+# 	if request.method == "GET":
+# 		if id:
+# 			configuracion = UmbralMedidaFisica.objects.get(pk = id)
+# 			form_configuracion = UmbralForm(instance = configuracion)
+# 		else:
+# 			#formset_configuracion = formset_factory(UmbralForm, extra=3)
+
+# 			ConfiguracionFormSet = formset_factory(UmbralForm, extra=3)
+# 			#form_configuracion = UmbralForm()
+# 	if request.method == "POST":
+# 		ConfiguracionFormSet = formset_factory(UmbralForm, extra=3)
+# 		formset = ConfiguracionFormSet(request.POST)
+
+#         if(formset.is_valid()):
+#             #message = "Thank you"
+#             for form in formset:
+#                 #print form
+#                 form.save()
+
+# 		#formset = QuestionFormSet(request.POST)
+# 		#formset_configuracion = UmbralForm(request.POST)
+# 		# formset_configuracion = formset_factory(UmbralForm)
+# 		# form_configuracion.is_valid():
+# 		# 	configuracion = form_configuracion.save()
+# 		# 	return HttpResponseRedirect(reverse(configuracion, args = [configuracion.id]))
+# 		# 	#response = redirect(reverse(agregarDescuento, args = [prestamo.id]))
+		
+
+# 	usuario = request.user.username
+# 	parametros = {
+# 		"usuario" : usuario, 
+# 		"titulo_modulo": titulo_modulo, 
+# 		"formset" : ConfiguracionFormSet()
+# 	}
+# 	return render_to_response('configuracion.html',parametros, context_instance=RequestContext(request))
+
+@login_required
+def configuracion(request):
+	titulo_modulo = "Configuración "
+	usuario = None
+	ConfiguracionFormSet = formset_factory(UmbralForm, extra = 0)
+
+	if request.method == "GET":
+		configuraciones = UmbralMedidaFisica.objects.all().order_by("id").values()
+		formset = ConfiguracionFormSet(initial = list(configuraciones))
+				
+	if request.method == "POST":
+	    formset = ConfiguracionFormSet(request.POST)
+
+	    if formset.is_valid():
+	        for form in formset:
+	            form.save()
+		return HttpResponseRedirect(reverse(configuracion))
+
+	    else:
+	        print "Something went wrong"
+
+	
+	usuario = request.user.username
+	parametros = {
+		"usuario" : usuario, 
+		"titulo_modulo": titulo_modulo, 
+		'formset': formset
+	}
+	return render_to_response('configuracion.html',parametros, context_instance=RequestContext(request))
 
 
 @login_required
@@ -217,7 +289,7 @@ def obtener_datos_medidos_equipo(request, id = None):
 
 @login_required
 def obtener_umbrales(request, id = None):
-	umbrales = UmbralMedidaFisica.objects.all()
+	umbrales = UmbralMedidaFisica.objects.all().order_by("id")
 	json_umbrales = serializers.serialize("json", umbrales)
 	return HttpResponse(json_umbrales, content_type='application/json')
 
@@ -370,6 +442,43 @@ def exportar_pdf(request, id):
 	response.write(buff.getvalue())
 	buff.close()
 	return response
+
+
+def linechart(request):
+
+    #instantiate a drawing object
+    import chart
+    d = chart.MyLineChartDrawing()
+
+    #extract the request params of interest.
+    #I suggest having a default for everything.
+    
+    d.height = 500
+    d.chart.height = 500
+    
+    d.width = 500
+    d.chart.width = 500
+   
+    d.title._text = request.session.get('Some custom title')
+    
+    d.XLabel._text = request.session.get('X Axis Labell')
+    d.YLabel._text = request.session.get('Y Axis Label')
+
+    d.chart.data = [((1,1), (2,2), (2.5,1), (3,3), (4,5)),((1,2), (2,3), (2.5,2), (3.5,5), (4,6))]
+   
+
+    
+    labels =  ["Label One","Label Two"]
+    if labels:
+        # set colors in the legend
+        d.Legend.colorNamePairs = []
+        for cnt,label in enumerate(labels):
+                d.Legend.colorNamePairs.append((d.chart.lines[cnt].strokeColor,label))
+
+
+    #get a GIF (or PNG, JPG, or whatever)
+    binaryStuff = d.asString('gif')
+    return HttpResponse(binaryStuff, 'image/gif')
 
 @login_required
 def registrar_obtener_equipo(request, id = None):

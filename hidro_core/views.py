@@ -29,6 +29,8 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Table
 from django.forms.formsets import formset_factory
+from django.contrib import messages
+
 
 # Create your views here.
 def login_usuario(request):
@@ -90,77 +92,52 @@ def dashboard(request):
 	}
 	return render_to_response('dashboard.html',parametros, context_instance=RequestContext(request))
 
-
-# @login_required
-# def configuracion(request, id = None):
-# 	titulo_modulo = "Configuraciones "
-# 	usuario = None
-# 	formset = None
-# 	if request.method == "GET":
-# 		if id:
-# 			configuracion = UmbralMedidaFisica.objects.get(pk = id)
-# 			form_configuracion = UmbralForm(instance = configuracion)
-# 		else:
-# 			#formset_configuracion = formset_factory(UmbralForm, extra=3)
-
-# 			ConfiguracionFormSet = formset_factory(UmbralForm, extra=3)
-# 			#form_configuracion = UmbralForm()
-# 	if request.method == "POST":
-# 		ConfiguracionFormSet = formset_factory(UmbralForm, extra=3)
-# 		formset = ConfiguracionFormSet(request.POST)
-
-#         if(formset.is_valid()):
-#             #message = "Thank you"
-#             for form in formset:
-#                 #print form
-#                 form.save()
-
-# 		#formset = QuestionFormSet(request.POST)
-# 		#formset_configuracion = UmbralForm(request.POST)
-# 		# formset_configuracion = formset_factory(UmbralForm)
-# 		# form_configuracion.is_valid():
-# 		# 	configuracion = form_configuracion.save()
-# 		# 	return HttpResponseRedirect(reverse(configuracion, args = [configuracion.id]))
-# 		# 	#response = redirect(reverse(agregarDescuento, args = [prestamo.id]))
-		
-
-# 	usuario = request.user.username
-# 	parametros = {
-# 		"usuario" : usuario, 
-# 		"titulo_modulo": titulo_modulo, 
-# 		"formset" : ConfiguracionFormSet()
-# 	}
-# 	return render_to_response('configuracion.html',parametros, context_instance=RequestContext(request))
-
 @login_required
 def configuracion(request):
 	titulo_modulo = "Configuración "
-	usuario = None
-	ConfiguracionFormSet = formset_factory(UmbralForm, extra = 0)
+	usuario, message, message_success, message_error = None, None, None, None
 
+	if 'message_success' in request.COOKIES:
+		message_success = request.COOKIES['message_success']
+		message = request.COOKIES['message']
+
+	# if 'message_error' in request.COOKIES:
+	# 	message = request.COOKIES['message']
+
+	ConfiguracionFormSet = formset_factory(UmbralForm, extra = 0)
 	if request.method == "GET":
 		configuraciones = UmbralMedidaFisica.objects.all().order_by("id").values()
 		formset = ConfiguracionFormSet(initial = list(configuraciones))
 				
 	if request.method == "POST":
 	    formset = ConfiguracionFormSet(request.POST)
-
+	    print formset.errors
 	    if formset.is_valid():
-	        for form in formset:
-	            form.save()
-		return HttpResponseRedirect(reverse(configuracion))
-
+			for form in formset:
+				form.save()
+			response = HttpResponseRedirect(reverse(configuracion))
+			response.set_cookie('message_success', '1')
+			response.set_cookie('message', 'Configuración Guardada.')
+			return response
 	    else:
-	        print "Something went wrong"
+			message_error = '1'
+			message = 'Configuración no Guardada.'
 
-	
 	usuario = request.user.username
 	parametros = {
+		"message_success" : message_success,
+		"message_error" : message_error,
+		"message" : message, 
 		"usuario" : usuario, 
 		"titulo_modulo": titulo_modulo, 
 		'formset': formset
 	}
-	return render_to_response('configuracion.html',parametros, context_instance=RequestContext(request))
+
+	response = render_to_response('configuracion.html',parametros, context_instance=RequestContext(request))
+	response.delete_cookie('message_success')
+	response.delete_cookie('message_error')
+	response.delete_cookie('message')
+	return response
 
 
 @login_required
@@ -282,7 +259,7 @@ def graficasxequipo(request, id = None):
 
 @login_required
 def obtener_datos_medidos_equipo(request, id = None):
-	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')[:10]
+	equipo_mediciones = EquipoMedicion.objects.filter(equipo_id = id).order_by('-fecha_creacion')[:1]
 	json_data = serializers.serialize("json", equipo_mediciones)
 	return HttpResponse(json_data, content_type='application/json')
 

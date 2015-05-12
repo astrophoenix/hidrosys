@@ -124,6 +124,33 @@
 {% block extra_js %}
     <!--<script src="{{ STATIC_URL }}js/equipos.js"></script>       -->
     <script type="text/javascript">
-        
+        var obj_configuracion = {
+            init : function()
+            {
+                //Solo números en los inputs
+                //$('.form-control').keyup(function () { this.value = this.value.replace(/[^0-9\.]/g,''); });
+                $('.form-control').keypress(function (event) {
+                    return isNumber(event, this)
+                });
+            },
+
+            isNumber : function (evt, element) 
+            {
+
+                var charCode = (evt.which) ? evt.which : event.keyCode
+
+                if (
+                    (charCode != 45 || $(element).val().indexOf('-') != -1) &&      // “-” CHECK MINUS, AND ONLY ONE.
+                    (charCode != 46 || $(element).val().indexOf('.') != -1) &&      // “.” CHECK DOT, AND ONLY ONE.
+                    (charCode < 48 || charCode > 57))
+                    return false;
+
+                return true;
+            }
+        };
+
+        $(function(){
+           obj_configuracion.init() ;
+        });
     </script>
 {% endblock %}

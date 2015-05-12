@@ -85,7 +85,7 @@
                       <i class="glyphicon glyphicon-home"></i>Panel</a>
                     </li>
                     <li><a href="{% url 'hidro_core.views.configuracion' %}">
-                      <i class="glyphicon glyphicon-wrench"></i> Configuración</a>
+                      <i class="glyphicon glyphicon-wrench"></i>Configuración</a>
                     </li>
                     <!--<li class="current"><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
                     <li><a href="buttons.html"><i class="glyphicon glyphicon-record"></i> Buttons</a></li>
@@ -107,6 +107,25 @@
           </div>
           <div class="col-md-10">
 
+            {% if message_success %}
+              <div class="alert alert-success alert-success" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <span class="glyphicon glyphicon-ok"></span>
+                <strong>{{ message }}</strong> 
+              </div>
+            {% endif %}
+
+            {% if message_error %}
+              <div class="alert alert-success alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <span class="glyphicon glyphicon-minus"></span>
+                <strong>{{ message }}</strong> 
+              </div>
+            {% endif %}
                         
             <div class="content-box-large">
                 <h2><b>{% if titulo_modulo %}{{titulo_modulo}}{% endif %}</b></h2>

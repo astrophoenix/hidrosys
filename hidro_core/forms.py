@@ -29,13 +29,19 @@ class BuscarEquipoForm(forms.Form):
 
 class UmbralForm(forms.Form):
 	id = forms.IntegerField(widget = forms.HiddenInput(), required=False)
-	nom_variable_fisica = forms.CharField(max_length = 100, widget=forms.TextInput({'class':'text-field form-control', 'readonly' : 'readonly'}))
-	variable_fisica = forms.CharField(max_length = 100, widget=forms.TextInput({'class':'text-field form-control', 'readonly' : 'readonly'}))
+	nom_variable_fisica = forms.CharField(max_length = 100, required=False, widget=forms.TextInput({'class':'text-field form-control', 'readonly' : 'readonly'}))
+	variable_fisica = forms.CharField(max_length = 100, required=False, widget=forms.TextInput({'class':'text-field form-control', 'readonly' : 'readonly', 'type':'hidden'}))
 	umbral_base = forms.DecimalField(max_digits = 11, decimal_places = 2, required=False, widget=forms.TextInput({'class':'text-field form-control text-center'}))
 	umbral_verde = forms.DecimalField(max_digits = 11, decimal_places = 2, required=False, widget=forms.TextInput({'class':'text-field form-control text-center'  }))
 	umbral_amarillo = forms.DecimalField(max_digits = 11, decimal_places = 2, required=False, widget=forms.TextInput({'class':'text-field form-control text-center'  }))
 	umbral_naranja = forms.DecimalField(max_digits = 11, decimal_places = 2, required=False, widget=forms.TextInput({'class':'text-field form-control text-center'  }))
 
+	# def __init__(self):
+	# 	super(UmbralForm, self).__init__(**args, **kwargs)
+		
+	# class Meta:
+	# 	model = UmbralMedidaFisica
+	
 	def save(self):
 		if self.cleaned_data['id']:
 			umbral = UmbralMedidaFisica.objects.get(pk = int(self.cleaned_data['id']))

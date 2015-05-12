@@ -4,6 +4,9 @@
 {% endblock %}
 
 {% block content %}
+    
+    
+
     <div class="row">
         <!-- <div class="content-box-large"> -->
             <div class="panel-heading">
@@ -16,16 +19,10 @@
                 {% endif %}
             </div>
 
-            <!-- <div class="panel-body">-->
-                <!-- <div id="grafica" style="height: 230px;"></div>
-                </div>-->
-            <!-- 4196668826876     -->
-
-            <!--34313936363638383236383736   -->
-            <!--</div>-->
-            <!--</div>-->
-            <div id="grafica"></div>
+            <div id="grafica"> </div>
+            <button>Start Updates</button>
     </div>
+
     <hr>
     <div class="row">
         <div class="panel-title">
@@ -108,7 +105,13 @@
 
     
     <script src="{{ STATIC_URL }}js/stats.js"></script>
-
+    
+    <!--  -->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/plugins/jqplot.dateAxisRenderer.min.js">
+    </script>
+    <!--  -->
 
     <script type="text/javascript">
         var obj_mediciones = {
@@ -118,7 +121,7 @@
                 obj_mediciones.medicionesxequipo();
                 setInterval(obj_mediciones.medicionesxequipo, 3000);
                 obj_mediciones.obtener_datos_medidos_equipo_grafica();
-                setInterval(obj_mediciones.obtener_datos_medidos_equipo_grafica, 3000);
+                setInterval(obj_mediciones.obtener_datos_medidos_equipo_grafica, 3000);             
             },
 
             medicionesxequipo : function()
@@ -168,7 +171,7 @@
                           
                         };
 
-                        Morris.Line({
+                        grafico_medicion = Morris.Line({
                             element: 'grafica',
                             data: tax_data,
                             xkey: 'fecha_creacion',
@@ -187,7 +190,105 @@
         };
             
         $(function(){
-            obj_mediciones.init();
+            //obj_mediciones.init();
+
+
+            /////////////////////////////////////////////
+            //refresh time (in millisec)
+            var t = 1000;
+            //samples to draw
+            var n = 20;
+            var x = (new Date()).getTime(); // current time
+            //buffer of n samples
+            var data = [];
+            for(i=0; i<n; i++){
+                data.push([x - (n-1-i)*t,0]);
+            } 
+
+            console.info(data)
+            var options = {
+                axes: {
+                   xaxis: {
+                      numberTicks: 4,
+                      renderer:$.jqplot.DateAxisRenderer,
+                      tickOptions:{formatString:'%H:%M:%S'},
+                      min : data[0][0],
+                      //max : data[19][0]
+                      max: data[data.length-1][0]
+                   },
+                   yaxis: {min:0, max: 100,numberTicks: 10,
+                        tickOptions:{formatString:'%.1f'} 
+                   }
+                },
+                seriesDefaults: {
+                   rendererOptions: { smooth: true}
+                }
+            };
+            var plot1 = $.jqplot ('grafica', [data],options);
+
+
+            $('button').click( function(){  
+                doUpdate();
+                $(this).hide();
+            });
+
+
+            function getValorSensor(){
+                
+                var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' equipo.id %}";
+
+                var respuesta = $.ajax({
+                    url : url_view,
+                    type : "GET",
+                    async: false,
+                    success : function(data)
+                    {
+                      //return data[0].fields.temperatura
+                    },
+
+                    error : function(xhr,errmsg,err) {
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the 
+                    }
+                });
+
+                //console.info(respuesta);
+                return JSON.parse(respuesta.responseText);
+                //return respuesta;
+                
+            }
+
+            function doUpdate() {
+
+                if(data.length > n-1){
+                    data.shift();
+                }
+                               
+                var result = getValorSensor();
+                
+                //data[i].fields.fecha_creacion
+                console.info("Tam : " + result.length);
+                
+                var temperatura = parseFloat(result[0].fields.temperatura)//result.fields[0].temperatura
+                console.info("tmp recibida : " + temperatura);
+
+                var y = temperatura; //Math.random();
+                var x = (new Date()).getTime();
+
+                data.push([x,y]);
+                if (plot1) {
+                    plot1.destroy();
+                }
+
+                console.info("data procesada ->>"+ data)
+                plot1.series[0].data = data; 
+                options.axes.xaxis.min = data[0][0];
+                options.axes.xaxis.max = data[data.length-1][0];
+                plot1 = $.jqplot ('grafica', [data],options);
+                setTimeout(doUpdate, t);
+                
+            }
+            //////////////////////////////////////////////
+
         }); 
     </script>
 {% endblock %}

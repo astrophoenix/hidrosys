@@ -197,7 +197,7 @@
             //refresh time (in millisec)
             var t = 1000;
             //samples to draw
-            var n = 20;
+            var n = 10;
             var x = (new Date()).getTime(); // current time
             //buffer of n samples
             var data = [];
@@ -209,7 +209,7 @@
             var options = {
                 axes: {
                    xaxis: {
-                      numberTicks: 4,
+                      numberTicks: 10,
                       renderer:$.jqplot.DateAxisRenderer,
                       tickOptions:{formatString:'%H:%M:%S'},
                       min : data[0][0],
@@ -266,10 +266,10 @@
                 var result = getValorSensor();
                 
                 //data[i].fields.fecha_creacion
-                console.info("Tam : " + result.length);
-                
+                                
                 var temperatura = parseFloat(result[0].fields.temperatura)//result.fields[0].temperatura
-                console.info("tmp recibida : " + temperatura);
+                console.info("temperatura : " + temperatura);
+                console.info("fecha_creacion : " + result[0].fields.fecha_creacion);
 
                 var y = temperatura; //Math.random();
                 var x = (new Date()).getTime();

@@ -13,7 +13,25 @@
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
+    <![e{% if message_success %}
+                <div class="alert alert-success alert-success" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <span class="glyphicon glyphicon-ok"></span>
+                  <strong>{{ message }}</strong> 
+                </div>
+              {% endif %}
+
+              {% if message_error %}
+                <div class="alert alert-success alert-danger" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <span class="glyphicon glyphicon-minus"></span>
+                  <strong>{{ message }}</strong> 
+                </div>
+              {% endif %}ndif]-->
 
   </head>
   <body class="login-bg">
@@ -34,18 +52,38 @@
 		<div class="row">
 
 			<div class="col-md-4 col-md-offset-4">
+  
+        {% if message_success %}
+                <div class="alert alert-success alert-success" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <span class="glyphicon glyphicon-ok"></span>
+                  <strong>{{ message }}</strong> 
+                </div>
+              {% endif %}
+
+              {% if message_error %}
+                <div class="alert alert-success alert-danger" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <span class="glyphicon glyphicon-minus"></span>
+                  <strong>{{ message }}</strong> 
+                </div>
+              {% endif %}
+
 				<div class="login-wrapper">
 			        <div class="box">
 			            <div class="content-wrap">
 			                <h6>Autenticación</h6>
-                            <form id="form_ingresar"action="" method="post">
-                                {% csrf_token %}
+                        <form id="form_ingresar"action="" method="post">{% csrf_token %}
     			                <input class="form-control" name="username" type="text" placeholder="usuario">
     			                <input class="form-control" name="password" type="password" placeholder="clave">
     			                <div class="action">
-                                    <button type="submit" class="btn btn-primary signup">Ingresar</button>
+                            <button type="submit" class="btn btn-primary signup">Ingresar</button>
     			                </div>
-                            </form>
+                        </form>
 			            </div>
 			        </div>
 
@@ -54,7 +92,9 @@
 			            <a href="signup.html">Sign Up</a>
 			        </div> -->
 			    </div>
-			</div>
+			 
+            </div>
+
 		</div>
 	</div>
 

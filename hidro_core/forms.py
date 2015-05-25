@@ -35,12 +35,6 @@ class UmbralForm(forms.Form):
 	umbral_verde = forms.DecimalField(max_digits = 11, decimal_places = 2, required=False, widget=forms.TextInput({'class':'text-field form-control text-center'  }))
 	umbral_amarillo = forms.DecimalField(max_digits = 11, decimal_places = 2, required=False, widget=forms.TextInput({'class':'text-field form-control text-center'  }))
 	umbral_naranja = forms.DecimalField(max_digits = 11, decimal_places = 2, required=False, widget=forms.TextInput({'class':'text-field form-control text-center'  }))
-
-	# def __init__(self):
-	# 	super(UmbralForm, self).__init__(**args, **kwargs)
-		
-	# class Meta:
-	# 	model = UmbralMedidaFisica
 	
 	def save(self):
 		if self.cleaned_data['id']:
@@ -48,9 +42,34 @@ class UmbralForm(forms.Form):
 		else:
 			umbral = UmbralMedidaFisica()
 		umbral.variable_fisica = self.cleaned_data['variable_fisica']
+		umbral.nom_variable_fisica = self.cleaned_data['nom_variable_fisica']
 		umbral.umbral_base = self.cleaned_data['umbral_base']
 		umbral.umbral_verde = self.cleaned_data['umbral_verde']
 		umbral.umbral_amarillo = self.cleaned_data['umbral_amarillo']
 		umbral.umbral_naranja = self.cleaned_data['umbral_naranja']
 		umbral.save()
 		return umbral
+
+
+class BuscarMedicionesForm(forms.Form):
+	
+	MESES = (
+        ('0', 'Seleccionar'), 
+        ('1', 'Enero'), 
+        ('2', 'Febrero'), 
+        ('3', 'Marzo'),
+        ('4', 'Abril'), 
+        ('5', 'Mayo'), 
+        ('6', 'Junio'),
+        ('7', 'Julio'), 
+        ('8', 'Agosto'), 
+        ('9', 'Septiembre'),
+        ('10', 'Octubre'), 
+        ('11', 'Noviembre'), 
+        ('12', 'Diciembre')
+    )
+
+	anio = forms.CharField(max_length = 5, widget=forms.TextInput({'class':'text-field form-control', 'style' : 'width:100%;' }))
+	mes = forms.ChoiceField(required = False, choices = MESES,widget=forms.Select(attrs={'class':'form-control'}) )
+	fecha_desde = forms.DateField(required = False, input_formats = ('%d/%m/%Y',),widget=forms.widgets.TextInput({'class':'form-control text-center'}))
+	fecha_hasta = forms.DateField(required = False, input_formats = ('%d/%m/%Y',),widget=forms.widgets.TextInput({'class':'form-control text-center'}))

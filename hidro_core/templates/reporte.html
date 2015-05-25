@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-10">&nbsp;&nbsp;</div>
+    <div class="col-md-2">
+        <div class="btn-group">
+            <button data-toggle="dropdown" class="btn btn-success dropdown-toggle" type="button">
+                <i class="glyphicon glyphicon-download"></i>
+                Exportar 
+                <span class="caret"></span>
+            </button>
+            <ul role="menu" class="dropdown-menu">
+                <li>
+                    <a id="btn_excel" target ="_blank" href="">
+                        <i class="fa fa-file-excel-o fa-lg"></i>Excel
+                    </a>
+                </li>
+                <li>
+                    <a id="btn_pdf" target="_blank" href="">
+                        <i class="fa fa-file-pdf-o fa-lg"></i> PDF
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div> 
+<br/>
+<div class="row">
+    <div class="col-md-12 panel-default">
+        <div class="content-box-header panel-heading">
+            <div class="panel-title ">
+                <h4>Buscar Registros</h4>
+            </div>
+        </div>
+        <div class="content-box-large box-with-header">
+            <form method="GET" action="{% url 'hidro_core.views.reporte' %}">
+                <div class="row">
+                    {% csrf_token %}
+                    <div class="col-md-1"> </div>
+                    <label class="col-md-1 control-label" for="text-field">Año: </label>
+                    <div class="col-md-2"> {{form_buscar.anio}} </div>
+                    <div class="col-md-2"> </div>
+                    <label class="col-md-2 control-label" for="text-field">Fecha Desde: </label>
+                    <div class="col-md-3"> {{form_buscar.fecha_desde}} </div>
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-1"> </div>
+                    <label class="col-md-1 control-label" for="text-field">Mes: </label>
+                    <div class="col-md-2"> {{form_buscar.mes}} </div>
+                    <div class="col-md-2"> </div>
+                    <label class="col-md-2 control-label" for="text-field">Fecha Hasta: </label>
+                    <div class="col-md-3"> {{form_buscar.fecha_hasta}} </div>
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-5"> </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary" >
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                         Buscar
+                        </button>
+                    </div>
+                    <div class="col-md-3"> </div>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr class="btn-primary">
+                <th class="text-center col-md-1">Fecha</th>
+                <th class="text-center col-md-1">Hora</th>
+                <th class="text-center">Temperatura Aire(°C)</th>
+                <th class="text-center">Humedad Aire (%)</th>
+                <th class="text-center">Temperatura Agua(°C)</th>
+                <th class="text-center">Iluminancia(Lux)</th>
+                <th class="text-center">Velocidad Viento(m/s)</th>
+                <th class="text-center">Compás Magnético(°)</th>
+                <th class="text-center">Aceleración(m/s²)</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            
+            {% if not mediciones %}
+                 <tr><td colspan="7">No existen datos a mostrar.</td></tr>   
+            {% else %}
+                {% for medicion in mediciones %}
+                    <tr id="{{ medicion.id }}">
+                        <td>{{ medicion.fecha_creacion|date:"d/m/Y" }}</td>
+                        <td>{{ medicion.fecha_creacion|date:"H:i:s" }}</td>
+                        <td class="text-center">{{ medicion.temperatura }}</td>
+                        <td class="text-center">{{ medicion.humedad }}</td>
+                        <td class="text-center">{{ medicion.temperatura_agua }}</td>
+                        <td class="text-center">{{ medicion.intensidad_luz }}</td>
+                        <td class="text-center">{{ medicion.viento }}</td>
+                        <td class="text-center">{{ medicion.compaz_mag }}</td>
+                        <td>
+                            <div class="text-center">x : {{ medicion.acelerometro_x }}</div>
+                            <div class="text-center">y : {{ medicion.acelerometro_y }}</div>
+                            <div class="text-center">z : {{ medicion.acelerometro_z }}</div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+
+
+        </tbody>
+    </table>
+
+    <ul class="pager wizard">
+        {% if mediciones.has_previous %}
+            <li class="previous">
+                <a href="?page={{ mediciones.previous_page_number }}" class="previous">Anterior</a>
+            </li>
+        {% endif %}
+
+        <span class="current">
+            Página {{ mediciones.number }} de {{ mediciones.paginator.num_pages }}
+        </span>
+
+        {% if mediciones.has_next %}
+            <li class="next">
+                <a href="?page={{ mediciones.next_page_number }}" class="next">Siguiente</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+
+            $.datepicker.regional['es'] = {
+                 closeText: 'Cerrar',
+                 prevText: '<Ant',
+                 nextText: 'Sig>',
+                 currentText: 'Hoy',
+                 monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                 monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+                 dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                 dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+                 dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+                 weekHeader: 'Sm',
+                 dateFormat: 'dd/mm/yy',
+                 firstDay: 1,
+                 isRTL: false,
+                 showMonthAfterYear: false,
+                 yearSuffix: ''
+             };
+             $.datepicker.setDefaults($.datepicker.regional['es']);
+
+            $(function () {
+                $( "#id_fecha_desde" ).datepicker({
+                   language: "it",
+                   autoclose: true,
+                   todayHighlight: true,
+                   dateFormat: 'dd/mm/yy'
+                });
+
+                $( "#id_fecha_hasta" ).datepicker({
+                    language: "it",
+                    autoclose: true,
+                    todayHighlight: true,
+                    dateFormat: 'dd/mm/yy'
+                });
+            });
+    </script>
+
+    <script type="text/javascript">
+            
+            $(function () {
+               
+                //Exportar PDF
+                $("#btn_pdf").click(function(){ 
+                    var fecha_desde = $("#id_fecha_desde").val();
+                    var fecha_hasta = $("#id_fecha_hasta").val();
+                    var mes = $("#id_mes").val();
+                    var anio = $("#id_anio").val();
+                    var url_view = "{% url 'hidro_core.views.exportar_pdf' 1 %}?mes="+mes+"&anio="+anio+"&fecha_desde="+fecha_desde+"&fecha_hasta="+fecha_hasta;
+                    $(this).attr("href", url_view);
+                });
+
+                //Exportar EXCEL
+                $("#btn_excel").click(function(){ 
+                    var fecha_desde = $("#id_fecha_desde").val();
+                    var fecha_hasta = $("#id_fecha_hasta").val();
+                    var mes = $("#id_mes").val();
+                    var anio = $("#id_anio").val();
+                    var url_view = "{% url 'hidro_core.views.exportar_excel' 1 %}?mes="+mes+"&anio="+anio+"&fecha_desde="+fecha_desde+"&fecha_hasta="+fecha_hasta;
+                    $(this).attr("href", url_view);
+                });
+                
+            });
+
+    </script>
+{% endblock %}

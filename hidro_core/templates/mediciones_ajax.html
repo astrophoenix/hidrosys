@@ -1,54 +1,89 @@
 {% for equipo_medicion in equipo_mediciones %}
-    {% if variable_fisica == 'temperatura_aire' %}
-        {% if equipo_medicion.temperatura > umbral.temperatura_aire %}
-            <tr id="{{equipo_medicion.id}}" class="danger">
-        {% else %}
-            <tr id="{{equipo_medicion.id}}" >
-        {% endif %}
-    {% endif %}
-
-    {% if variable_fisica == 'humedad_aire' %}
-        {% if equipo_medicion.humedad > umbral.humedad_aire %}
-            <tr id="{{equipo_medicion.id}}" class="danger">
-        {% else %}
-            <tr id="{{equipo_medicion.id}}" >
-        {% endif %}
-    {% endif %}
-
-    {% if variable_fisica == 'intensidad_luz' %}
-        {% if equipo_medicion.intensidad_luz > umbral.intensidad_luz %}
-            <tr id="{{equipo_medicion.id}}" class="danger">
-        {% else %}
-            <tr id="{{equipo_medicion.id}}" >
-        {% endif %}
-    {% endif %}
-
+    <tr>
             <td>{{equipo_medicion.fecha_creacion|date:"d/m/Y"}}</td>
             <td>{{equipo_medicion.fecha_creacion|date:"H:i:s"}}</td>
-            {% if variable_fisica == 'temperatura_aire' %}
-                <td>
-                    {% if equipo_medicion.temperatura > umbral.temperatura_aire %}
+            <td>
+                
+                <!-- VARIABLE TEMPERATURA DE AGUA -->
+                {% if variable_fisica == 'temperatura_mar' %}
+                    {% if equipo_medicion.temperatura_agua >= var_fisica_umbrales.umbral_base and equipo_medicion.temperatura_agua <=  var_fisica_umbrales.umbral_verde %}
+                        <span class="label label-success">{{ equipo_medicion.temperatura_agua }}</span>
+                    {% elif equipo_medicion.temperatura_agua > var_fisica_umbrales.umbral_verde and equipo_medicion.temperatura_agua <=  var_fisica_umbrales.umbral_amarillo %}
+                        <span class="label label-amarillo">{{ equipo_medicion.temperatura_agua }}</span>
+                    {% elif equipo_medicion.temperatura_agua > var_fisica_umbrales.umbral_amarillo and equipo_medicion.temperatura_agua <=  var_fisica_umbrales.umbral_naranja %}
+                        <span class="label label-warning">{{ equipo_medicion.temperatura_agua }}</span>
+                    {% elif equipo_medicion.temperatura_agua > var_fisica_umbrales.umbral_naranja %}
+                        <span class="label label-danger">{{ equipo_medicion.temperatura_agua }}</span>
+                    {% endif %}
+                {% endif %}
+
+                <!-- VARIABLE TEMPERARUTA DE AIRE -->
+                {% if variable_fisica == 'temperatura_aire' %}
+                    {% if equipo_medicion.temperatura >= var_fisica_umbrales.umbral_base and equipo_medicion.temperatura <=  var_fisica_umbrales.umbral_verde %}
+                        <span class="label label-success">{{ equipo_medicion.temperatura }}</span>
+                    {% elif equipo_medicion.temperatura > var_fisica_umbrales.umbral_verde and equipo_medicion.temperatura <=  var_fisica_umbrales.umbral_amarillo %}
+                        <span class="label label-amarillo">{{ equipo_medicion.temperatura }}</span>
+                    {% elif equipo_medicion.temperatura > var_fisica_umbrales.umbral_amarillo and equipo_medicion.temperatura <=  var_fisica_umbrales.umbral_naranja %}
+                        <span class="label label-warning">{{ equipo_medicion.temperatura }}</span>
+                    {% elif equipo_medicion.temperatura > var_fisica_umbrales.umbral_naranja %}
                         <span class="label label-danger">{{ equipo_medicion.temperatura }}</span>
-                    {% else %}
-                        {{ equipo_medicion.temperatura }}
                     {% endif %}
-                </td>
-            {% elif variable_fisica == 'humedad_aire'%}
-                <td>
-                    {% if equipo_medicion.humedad > umbral.humedad_aire %}
+                {% endif %}
+
+                <!-- VARIABLE HUMEDAD DE AIRE -->
+                {% if variable_fisica == 'humedad_aire' %}
+                    {% if equipo_medicion.humedad >= var_fisica_umbrales.umbral_base and equipo_medicion.humedad <=  var_fisica_umbrales.umbral_verde %}
+                        <span class="label label-success">{{ equipo_medicion.humedad }}</span>
+                    {% elif equipo_medicion.humedad > var_fisica_umbrales.umbral_verde and equipo_medicion.humedad <=  var_fisica_umbrales.umbral_amarillo %}
+                        <span class="label label-amarillo">{{ equipo_medicion.humedad }}</span>
+                    {% elif equipo_medicion.humedad > var_fisica_umbrales.umbral_amarillo and equipo_medicion.humedad <=  var_fisica_umbrales.umbral_naranja %}
+                        <span class="label label-warning">{{ equipo_medicion.humedad }}</span>
+                    {% elif equipo_medicion.humedad > var_fisica_umbrales.umbral_naranja %}
                         <span class="label label-danger">{{ equipo_medicion.humedad }}</span>
-                    {% else %}
-                        {{ equipo_medicion.humedad }}
                     {% endif %}
-                </td>
-            {% elif variable_fisica == 'intensidad_luz' %}
-                <td>
-                    {% if equipo_medicion.intensidad_luz > umbral.intensidad_luz %}
+                {% endif %}
+
+
+                <!-- VARIABLE INTENSIDAD LUZ -->
+                {% if variable_fisica == 'intensidad_luz' %}
+                    {% if equipo_medicion.intensidad_luz >= var_fisica_umbrales.umbral_base and equipo_medicion.intensidad_luz <=  var_fisica_umbrales.umbral_verde %}
+                        <span class="label label-success">{{ equipo_medicion.intensidad_luz }}</span>
+                    {% elif equipo_medicion.intensidad_luz > var_fisica_umbrales.umbral_verde and equipo_medicion.intensidad_luz <=  var_fisica_umbrales.umbral_amarillo %}
+                        <span class="label label-amarillo">{{ equipo_medicion.intensidad_luz }}</span>
+                    {% elif equipo_medicion.intensidad_luz > var_fisica_umbrales.umbral_amarillo and equipo_medicion.intensidad_luz <=  var_fisica_umbrales.umbral_naranja %}
+                        <span class="label label-warning">{{ equipo_medicion.intensidad_luz }}</span>
+                    {% elif equipo_medicion.intensidad_luz > var_fisica_umbrales.umbral_naranja %}
                         <span class="label label-danger">{{ equipo_medicion.intensidad_luz }}</span>
-                    {% else %}
-                        {{ equipo_medicion.intensidad_luz }}
                     {% endif %}
-                </td>
-            {% endif %}
+                {% endif %}
+
+
+                <!-- VARIABLE VELOCIDAD VIENTO -->
+                {% if variable_fisica == 'velocidad_viento' %}
+                    {% if equipo_medicion.viento >= var_fisica_umbrales.umbral_base and equipo_medicion.viento <=  var_fisica_umbrales.umbral_verde %}
+                        <span class="label label-success">{{ equipo_medicion.viento }}</span>
+                    {% elif equipo_medicion.viento > var_fisica_umbrales.umbral_verde and equipo_medicion.viento <=  var_fisica_umbrales.umbral_amarillo %}
+                        <span class="label label-amarillo">{{ equipo_medicion.viento }}</span>
+                    {% elif equipo_medicion.viento > var_fisica_umbrales.umbral_amarillo and equipo_medicion.viento <=  var_fisica_umbrales.umbral_naranja %}
+                        <span class="label label-warning">{{ equipo_medicion.viento }}</span>
+                    {% elif equipo_medicion.viento > var_fisica_umbrales.umbral_naranja %}
+                        <span class="label label-danger">{{ equipo_medicion.viento }}</span>
+                    {% endif %}
+                {% endif %}
+
+
+                <!-- VARIABLE COMPAS MAGNÉTICO -->
+                {% if variable_fisica == 'compas_mag' %}
+                    {{ equipo_medicion.compaz_mag }}
+                {% endif %}
+
+                <!-- VARIABLE ACELERACIÓN -->
+                {% if variable_fisica == 'acelerometro' %}
+                    <div class="tab">x : {{ equipo_medicion.acelerometro_x }}</div>
+                    <div class="tab">y : {{ equipo_medicion.acelerometro_y }}</div>
+                    <div class="tab">z : {{ equipo_medicion.acelerometro_z }}</div>
+                {% endif %}
+                
+            </td>
     </tr>
 {% endfor %}

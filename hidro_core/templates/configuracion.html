@@ -100,7 +100,7 @@
                         {{ formset.management_form }}
                         {% for form in formset %}
                           <tr>
-                            <td>{{ form.id }}{{ form.nom_variable_fisica }}</td>
+                            <td>{{ form.id }}{{ form.nom_variable_fisica }} {{ form.variable_fisica }} </td>
                             <td>{{ form.umbral_base }}</td>
                             <td>{{ form.umbral_verde }}</td>
                             <td>{{ form.umbral_amarillo }}</td>
@@ -122,31 +122,23 @@
 {% endblock %}
 
 {% block extra_js %}
-    <!--<script src="{{ STATIC_URL }}js/equipos.js"></script>       -->
     <script type="text/javascript">
         var obj_configuracion = {
             init : function()
             {
                 //Solo números en los inputs
-                //$('.form-control').keyup(function () { this.value = this.value.replace(/[^0-9\.]/g,''); });
-                $('.form-control').keypress(function (event) {
-                    return isNumber(event, this)
-                });
+                $('.form-control').keypress(function(event) {
+                    
+                    if( (event.which>0 && event.which < 46) || event.which > 59){
+                        event.preventDefault();
+                    }
+                    
+                    if(event.which == 46 && $(this).val().indexOf('.') != -1) {
+                        event.preventDefault();
+                    } 
+                })  
             },
 
-            isNumber : function (evt, element) 
-            {
-
-                var charCode = (evt.which) ? evt.which : event.keyCode
-
-                if (
-                    (charCode != 45 || $(element).val().indexOf('-') != -1) &&      // “-” CHECK MINUS, AND ONLY ONE.
-                    (charCode != 46 || $(element).val().indexOf('.') != -1) &&      // “.” CHECK DOT, AND ONLY ONE.
-                    (charCode < 48 || charCode > 57))
-                    return false;
-
-                return true;
-            }
         };
 
         $(function(){

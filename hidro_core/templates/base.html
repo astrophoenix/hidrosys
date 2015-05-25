@@ -82,10 +82,13 @@
                 <ul class="nav">
                     <!-- Main menu -->
                     <li><a href="{% url 'hidro_core.views.dashboard' %}">
-                      <i class="glyphicon glyphicon-home"></i>Panel</a>
+                      <i class="glyphicon glyphicon-home"></i>Principal</a>
                     </li>
                     <li><a href="{% url 'hidro_core.views.configuracion' %}">
                       <i class="glyphicon glyphicon-wrench"></i>Configuración</a>
+                    </li>
+                    <li><a href="{% url 'hidro_core.views.reporte' %}">
+                      <i class="glyphicon glyphicon-list"></i>Reportes</a>
                     </li>
                     <!--<li class="current"><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
                     <li><a href="buttons.html"><i class="glyphicon glyphicon-record"></i> Buttons</a></li>
@@ -163,7 +166,7 @@
     <script src="{{ STATIC_URL }}vendors/datatables/dataTables.bootstrap.js"></script>
 
     <!--<script src="{{ STATIC_URL }}js/custom.js"></script>-->
-    <script src="{{ STATIC_URL }}js/tables.js"></script>
+    <!--<script src="{{ STATIC_URL }}js/tables.js"></script>-->
     <script src="{{ STATIC_URL }}vendors/form-helpers/js/bootstrap-formhelpers.min.js"></script>
     <script src="{{ STATIC_URL }}vendors/select/bootstrap-select.min.js"></script>
     <script src="{{ STATIC_URL }}vendors/tags/js/bootstrap-tags.min.js"></script>
@@ -179,7 +182,7 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 
-    <script src="{{ STATIC_URL }}js/forms.js"></script>
+    <!--<script src="{{ STATIC_URL }}js/forms.js"></script>-->
     {% block extra_js %}
         
     {% endblock %}

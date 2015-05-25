@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block extra_css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}vendors/morris/morris.css">
+    
+    <style>
+    tab { padding-left: 4em; }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -11,28 +15,64 @@
         <!-- <div class="content-box-large"> -->
             <div class="panel-heading">
                 {% if variable_fisica == 'temperatura_aire' %}
-                    <div class="text-center"><h3>Temperatura Aire vs Tiempo</h3></div>
+                    <div class="titulo text-center hide">Temperatura Aire vs Tiempo</div>
+                    <input type="hidden" id="y_nom_var_fisica" value="Temperatura (°C)">
+                    <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
+                    <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
+                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
+                                        
                 {% elif variable_fisica == 'humedad_aire'%}
-                    <div class="text-center"><h3>Humedad vs Tiempo</h3></div>
+                    <div class="titulo text-center hide">Humedad vs Tiempo</div>
+                    <input type="hidden" id="y_nom_var_fisica" value="Humedad %">
+                    <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
+                    <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
+                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
                 {% elif variable_fisica == 'intensidad_luz'%}
-                    <div class="text-center"><h3>Intensidad Luz vs Tiempo</h3></div>
+                    <div class="titulo text-center hide">Iluminancia vs Tiempo</div>
+                    <input type="hidden" id="y_nom_var_fisica" value="Luminosidad ">
+                    <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
+                    <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
+                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
+                {% elif variable_fisica == 'temperatura_mar'%}
+                    <div class="titulo text-center hide">Temperatura Agua vs Tiempo</div>
+                    <input type="hidden" id="y_nom_var_fisica" value="Temperatura Agua">
+                    <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
+                    <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
+                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
+                {% elif variable_fisica == 'velocidad_viento'%}
+                    <div class="titulo text-center hide">Velocidad Viento vs Tiempo</div>
+                    <input type="hidden" id="y_nom_var_fisica" value="Velocidad Viento">
+                    <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
+                    <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
+                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
+                {% elif variable_fisica == 'compas_mag'%}
+                    <div class="titulo text-center hide">Brújula vs Tiempo</div>
+                    {% comment %} <input type="hidden" id="y_nom_var_fisica" value="Brújula">
+                    <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
+                    <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
+                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}"> {% endcomment %}
+                {% elif variable_fisica == 'acelerometro'%}
+                    <div class="titulo text-center hide">Acelerómetro vs Tiempo</div>
                 {% endif %}
             </div>
+    </div>
 
-            <div id="grafica"> </div>
-            <button>Start Updates</button>
+    <div class="row">
+        <div id="chart" style="width:100%; height:400px;"></div>
+        
     </div>
 
     <hr>
     <div class="row">
         <div class="panel-title">
             <h3>Registros</h3>
-            Los datos se actualizan cada X segundos.
+            Los datos se actualizan cada segundo.
+
             
-            <a id="" target="_blank" href="{% url 'hidro_core.views.linechart' %}"> Graph</a>
+            {% comment %} <a id="" target="_blank" href="{% url 'hidro_core.views.linechart' %}"> Graph</a> {% endcomment %}
 
         </div>
-        <div class="panel-heading">
+        {% comment %} <div class="panel-heading">
             <!-- <div class="panel-title">Registros</div> -->
             
             <div class="panel-options">
@@ -49,7 +89,7 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> {% endcomment %}
         <div class="panel-body">
         <div id="tabla_mediciones">
             <table class="table table-responsive">
@@ -61,7 +101,15 @@
                 {% elif variable_fisica == 'humedad_aire'%}
                     <th>Humedad (%)</th>
                 {% elif variable_fisica == 'intensidad_luz'%}
-                    <th>Intensidad Luz(%)</th>
+                    <th>Iluminancia(Lux)</th>
+                {% elif variable_fisica == 'temperatura_mar' %}
+                    <th>Temperatura Agua(°C)</th>
+                {% elif variable_fisica == 'velocidad_viento' %}
+                    <th>Velocidad Viento (m/s)</th>
+                {% elif variable_fisica == 'compas_mag' %}
+                    <th>Compas Magnético (Grados)</th>
+                {% elif variable_fisica == 'acelerometro' %}
+                    <th>Aceleración(m/s²)</th>
                 {% endif %}
               </thead>
               <tbody id="data_mediciones">
@@ -106,22 +154,97 @@
     
     <script src="{{ STATIC_URL }}js/stats.js"></script>
     
-    <!--  -->
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <!--NO BORRAR  -->
+    <!--<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/jquery.jqplot.min.js"></script>
-    <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/plugins/jqplot.dateAxisRenderer.min.js">
-    </script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/plugins/jqplot.dateAxisRenderer.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/plugins/jqplot.pointLabels.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/plugins/jqplot.canvasTextRenderer.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jqplot/1.0.8/plugins/jqplot.canvasOverlay.min.js"></script>-->
+    
     <!--  -->
+    <script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+     <!-- Importo el archivo Javascript de Highcharts directamente desde su servidor -->
+    <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+     <!-- <script src="/socket.io/socket.io.js"></script>-->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
+
+    <script>
+    
+    var socket = io('http://localhost:4000');
+    // Creo un nuevo objeto 'Chart'
+    var chart;
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart', 
+            defaultSeriesType: 'spline',
+            events: {
+                load: function() {
+                                        
+                    socket.emit('obtener_variable_fisica', '{{ variable_fisica }}');
+                    socket.on('ultima_medicion_variable', function (medicion_variable) {
+                        var time = (new Date()).getTime();
+                        {% if variable_fisica == 'acelerometro' %}
+                            var seriesx = chart.series[0];
+                            var seriesy = chart.series[1];
+                            var seriesz = chart.series[2];
+                            seriesx.addPoint([time, medicion_variable.x]);
+                            seriesy.addPoint([time, medicion_variable.y]);
+                            seriesz.addPoint([time, medicion_variable.z]);
+                        {% else %}    
+                            var series = chart.series[0];
+                            series.addPoint([time, medicion_variable]);
+                        {% endif %}
+                    });
+
+                }
+            }
+        },
+        rangeSelector : {
+            selected : 100
+        },
+        title: {
+            text: $('.titulo').text()
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            title: {
+                text: $('#y_nom_var_fisica').val(),
+                margin: 80
+            }
+        },
+        series: [{
+            name: 'Aceleración X',
+            data: []
+        },{
+            name: 'Aceleración Y',
+            data: []
+        },{
+            name: 'Aceleración Z',
+            data: []
+        }]
+    });
+    </script>
 
     <script type="text/javascript">
+
         var obj_mediciones = {
 
             init : function ()
             {
                 obj_mediciones.medicionesxequipo();
-                setInterval(obj_mediciones.medicionesxequipo, 3000);
-                obj_mediciones.obtener_datos_medidos_equipo_grafica();
-                setInterval(obj_mediciones.obtener_datos_medidos_equipo_grafica, 3000);             
+                setInterval(obj_mediciones.medicionesxequipo, 1000);
+                //obj_mediciones.obtener_datos_medidos_equipo_grafica();
+                //setInterval(obj_mediciones.obtener_datos_medidos_equipo_grafica, 3000);             
             },
 
             medicionesxequipo : function()
@@ -144,149 +267,158 @@
                 });
             },
 
-            obtener_datos_medidos_equipo_grafica : function()
-            {
-                var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' equipo.id %}";
-                $.ajax({
-                    url : url_view,
-                    type : "GET",
-                    
-                    success : function(data)
-                    {
-                        $("#grafica").html(" ");
-                        var tax_data = [];
-                        for (var i = 0; i < data.length; i++) {
-                          var date = new Date(data[i].fields.fecha_creacion);
-                          var fecha_creacion = date.getTime();
-                          var temperatura = data[i].fields.temperatura;
-                          // var humedad = data[i].fields.humedad;
-                          // var intensidad_luz = data[i].fields.intensidad_luz;
-                          
-                          tax_data.push({
-                            fecha_creacion:fecha_creacion,
-                            temperatura: temperatura, 
-                            // humedad: humedad, 
-                            // intensidad_luz: intensidad_luz,
-                          });
-                          
-                        };
-
-                        grafico_medicion = Morris.Line({
-                            element: 'grafica',
-                            data: tax_data,
-                            xkey: 'fecha_creacion',
-                            xLabels: "hora",
-                            ykeys: ['temperatura'],
-                            labels: ['Temperatura', 'XXXXX']
-                            //ykeys: ['temperatura', 'humedad', 'intensidad_luz'],
-                            //labels: ['Temperatura', 'Humedad', 'Luz']
-                        });
-                    }
-                });
-            },
-
-
-            
         };
             
         $(function(){
-            //obj_mediciones.init();
+            obj_mediciones.init();
 
-
-            /////////////////////////////////////////////
-            //refresh time (in millisec)
-            var t = 1000;
-            //samples to draw
-            var n = 10;
-            var x = (new Date()).getTime(); // current time
-            //buffer of n samples
-            var data = [];
-            for(i=0; i<n; i++){
-                data.push([x - (n-1-i)*t,0]);
-            } 
-
-            console.info(data)
-            var options = {
-                axes: {
-                   xaxis: {
-                      numberTicks: 10,
-                      renderer:$.jqplot.DateAxisRenderer,
-                      tickOptions:{formatString:'%H:%M:%S'},
-                      min : data[0][0],
-                      //max : data[19][0]
-                      max: data[data.length-1][0]
-                   },
-                   yaxis: {min:0, max: 100,numberTicks: 10,
-                        tickOptions:{formatString:'%.1f'} 
-                   }
-                },
-                seriesDefaults: {
-                   rendererOptions: { smooth: true}
-                }
-            };
-            var plot1 = $.jqplot ('grafica', [data],options);
-
-
-            $('button').click( function(){  
-                doUpdate();
-                $(this).hide();
-            });
-
-
-            function getValorSensor(){
+            {% comment %} NO BORRAR
+            {% if not variable_fisica == 'compas_mag' %}
+                var variable_fisica = $("#y_nom_var_fisica").val();
+                var y_var_fisica_umbral_verde = $("#y_var_fisica_umbral_verde").val();
+                y_var_fisica_umbral_verde = y_var_fisica_umbral_verde.replace(/\,/g, '.');
                 
-                var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' equipo.id %}";
+                var y_var_fisica_umbral_amarillo = $("#y_var_fisica_umbral_amarillo").val();
+                y_var_fisica_umbral_amarillo = y_var_fisica_umbral_amarillo.replace(/\,/g, '.');
 
-                var respuesta = $.ajax({
-                    url : url_view,
-                    type : "GET",
-                    async: false,
-                    success : function(data)
-                    {
-                      //return data[0].fields.temperatura
+                var y_var_fisica_umbral_naranja = $("#y_var_fisica_umbral_naranja").val();
+                y_var_fisica_umbral_naranja = y_var_fisica_umbral_naranja.replace(/\,/g, '.');
+
+                /////////////////////////////////////////y////
+                //refresh time (in millisec)
+                var t = 1000;
+                //samples to draw
+                var n = 11;
+                var x = (new Date()).getTime(); // current time
+                //buffer of n samples
+                var data = [];
+                for(i=0; i<n; i++){
+                    data.push([x - (n-1-i)*t,0]);
+                } 
+
+
+                var options = {
+                    
+                    // gridPadding:{
+                    //     right:40,
+                    //     left:40
+                    // },
+
+                    canvasOverlay: {
+                        show: true,
+                        objects: [
+                            
+                            {horizontalLine: {
+                                name: 'pebbles',
+                                y: y_var_fisica_umbral_verde,
+                                lineWidth: 2,
+                                xOffset: 0,
+                                color: 'rgb(89, 198, 154)',
+                                shadow: false
+                            }},
+                            {horizontalLine: {
+                                name: 'pebbles',
+                                y: y_var_fisica_umbral_amarillo,
+                                lineWidth: 2,
+                                xOffset: 0,
+                                color: 'rgb(253, 250, 35)',
+                                shadow: false
+                            }},
+
+                            {horizontalLine: {
+                                name: 'pebbles',
+                                y: y_var_fisica_umbral_naranja,
+                                lineWidth: 2,
+                                xOffset: 0,
+                                color: 'rgb(251, 137, 66)',
+                                shadow: false
+                            }}
+                            
+                        ]
                     },
 
-                    error : function(xhr,errmsg,err) {
-                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the 
-                    }
+                    axes: {
+                       xaxis: {
+                          label : 'Tiempo',
+                          numberTicks: 11,
+                          renderer:$.jqplot.DateAxisRenderer,
+                          
+                          tickOptions:{formatString:'%H:%M:%S'},
+                          min : data[0][0],
+                          max: data[data.length-1][0]
+
+                       },
+
+                       yaxis: {
+                            label : variable_fisica,
+                            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                            min:0, 
+                            max: 100,
+                            numberTicks: 11,
+                            tickOptions:{formatString:'%.0f'} 
+                       }
+                    },
+
+                    
+                    
+                    seriesDefaults: { 
+                        // pointLabels: {
+                        //     show:true,
+                        //     formatString: function(){return '%s°C';}()
+                        // },
+
+                        rendererOption:{smooth: true}
+                    },
+
+                    
+                };
+
+                var plot1 = $.jqplot ('grafica', [data], options);
+               
+                $('button').click( function(){  
+                    doUpdate();
+                    $(this).hide();
                 });
 
-                //console.info(respuesta);
-                return JSON.parse(respuesta.responseText);
-                //return respuesta;
-                
-            }
 
-            function doUpdate() {
-
-                if(data.length > n-1){
-                    data.shift();
-                }
-                               
-                var result = getValorSensor();
-                
-                //data[i].fields.fecha_creacion
-                                
-                var temperatura = parseFloat(result[0].fields.temperatura)//result.fields[0].temperatura
-                console.info("temperatura : " + temperatura);
-                console.info("fecha_creacion : " + result[0].fields.fecha_creacion);
-
-                var y = temperatura; //Math.random();
-                var x = (new Date()).getTime();
-
-                data.push([x,y]);
-                if (plot1) {
-                    plot1.destroy();
+                function getValorSensor(){
+                    
+                    var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' equipo.id %}";
+                    var respuesta = $.ajax({
+                        url : url_view,
+                        type : "GET",
+                        async: false,
+                        success : function(data) {   },
+                        error : function(xhr,errmsg,err) {
+                            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the 
+                        }
+                    });
+                    return JSON.parse(respuesta.responseText);                
                 }
 
-                console.info("data procesada ->>"+ data)
-                plot1.series[0].data = data; 
-                options.axes.xaxis.min = data[0][0];
-                options.axes.xaxis.max = data[data.length-1][0];
-                plot1 = $.jqplot ('grafica', [data],options);
-                setTimeout(doUpdate, t);
-                
-            }
+                function doUpdate() {
+
+                    if(data.length > n-1){  data.shift();  }
+                                   
+                    var result = getValorSensor();
+                    var temperatura = parseFloat(result[0].fields.temperatura)//result.fields[0].temperatura
+                    var y = temperatura; 
+                    var x = (new Date()).getTime();
+
+                    data.push([x,y]);
+                    if (plot1) { plot1.destroy(); }
+
+                    plot1.series[0].data = data; 
+                    options.axes.xaxis.min = data[0][0];
+                    options.axes.xaxis.max = data[data.length-1][0];
+                    options.axes.xaxis.pad = 2.5;
+                    //options.seriesDefaults.pointLabels = { show: true, formatString: function(){return '%s°C';}()},
+                    plot1 = $.jqplot ('grafica', [data],options);
+                    setTimeout(doUpdate, t);
+                    
+                }
+            {% endif %}
+            {% endcomment %}
             //////////////////////////////////////////////
 
         }); 

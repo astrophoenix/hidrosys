@@ -60,15 +60,13 @@
                 <ul class="nav">
                     <!-- Main menu -->
                     <li><a href="{% url 'hidro_core.views.dashboard' %}">
-                      <i class="glyphicon glyphicon-home"></i>Panel</a>
+                      <i class="glyphicon glyphicon-home"></i>Principal</a>
                     </li>
                     <li><a href="{% url 'hidro_core.views.configuracion' %}">
                       <i class="glyphicon glyphicon-wrench"></i> Configuración</a>
                     </li>
+                    <li><a href="{% url 'hidro_core.views.reporte' %}"><i class="glyphicon glyphicon-list"></i>Reportes</a></li>
 
-                    <!-- <li><a href="javascript:void(0);" id="menu_configuracion">
-                      <i class="glyphicon glyphicon-wrench"></i> Configuración</a>
-                    </li> -->
                     <!-- <li><a href="calendar.html"><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
                     <li class="current"><a href="stats.html"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>
                     <li><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
@@ -87,7 +85,7 @@
               <div class="row">
         				<div class="col-md-3">
         					<div class="content-box-header">
-        						<div class="text-center"><b>Temperatura Mar [°C]<b></div>
+        						<div class="text-center"><b>Temperatura Agua [°C]<b></div>
         					</div>
         					<div class="content-box-large box-with-header">
         						<p class="text-center">
@@ -140,7 +138,7 @@
 
         				<div class="col-md-3">
         					<div class="content-box-header">
-        						<div class="text-center"><b>Radiación Solar [Lux]<b></div>
+        						<div class="text-center"><b>Iluminancia [Lux]<b></div>
         					</div>
         					<div class="content-box-large box-with-header">
         						<p class="text-center">
@@ -167,7 +165,7 @@
                   </p>
                     <div class="row">
                       <div class="text-center">
-                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'viento' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'velocidad_viento' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
                       </div>
                     </div>
                   </div>
@@ -184,6 +182,22 @@
                     <div class="row">
                       <div class="text-center">
                         <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'compas_mag' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="content-box-header">
+                    <div class="text-center">Acelerómetro</div>
+                  </div>
+                  <div class="content-box-large box-with-header">
+                    <p class="text-center">
+                    <input id="knob_acelero" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+                  </p>
+                    <div class="row">
+                      <div class="text-center">
+                        <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'acelerometro' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
                       </div>
                     </div>
                   </div>
@@ -207,6 +221,13 @@
             
          </div>
       </footer>
+
+
+    <!-- <script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>-->
+     <!-- Importo el archivo Javascript de Highcharts directamente desde su servidor -->
+    <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+    <!--<script src="https://code.highcharts.com/highcharts.js"></script>-->
+
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
@@ -245,7 +266,7 @@
                 obj_dashboard.init_knobs(obj_dashboard.ids_knobs);
                 obj_dashboard.obtener_umbrales();
                 obj_dashboard.obtener_datos_medidos_equipo();
-                setInterval(obj_dashboard.obtener_datos_medidos_equipo, 3000);
+                //setInterval(obj_dashboard.obtener_datos_medidos_equipo, 3000);
             },
 
             init_knobs : function (knobs)
@@ -278,47 +299,105 @@
               
             },
 
+            // obtener_datos_medidos_equipo : function()
+            // {
+            //     var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' 1 %}";
+            //     $.ajax({
+            //         url : url_view,
+            //         type : "GET",
+            //         success : function(data)
+            //         {
+            //             var temp_aire = parseFloat(data[0].fields.temperatura);
+            //             var temp_mar = parseFloat(data[0].fields.temperatura_agua);
+            //             var viento = parseFloat(data[0].fields.viento);
+            //             var hum_aire = parseFloat(data[0].fields.humedad);
+            //             var inten_luz = parseFloat(data[0].fields.intensidad_luz);
+                        
+            //             //medición temperatura agua
+            //             var rangos_temp_mar = obj_dashboard.umbrales_temperatura_mar;
+            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[0], temp_mar, rangos_temp_mar);
+                        
+            //             //medición temperatura aire
+            //             var rangos_temp_aire = obj_dashboard.umbrales_temperatura_aire;
+            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[1], temp_aire, rangos_temp_aire);
+
+            //             //medición humedad aire
+            //             var rangos_hum_aire = obj_dashboard.umbrales_humedad_aire;
+            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[2], hum_aire, rangos_hum_aire);
+
+            //             //medición intensidad luz
+            //             var rangos_intensidad_luz = obj_dashboard.umbrales_intensidad_luz;
+            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[3], inten_luz, rangos_intensidad_luz);
+
+            //             //medición viento
+            //             var rangos_viento = obj_dashboard.umbrales_viento;
+            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento);
+
+            //         },
+
+            //         // handle a non-successful response
+            //         error : function(xhr,errmsg,err) {
+            //             console.log(xhr.status + ": " + xhr.responseText);
+            //         }
+            //     });
+            // },
+
+
             obtener_datos_medidos_equipo : function()
             {
-                var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' 1 %}";
-                $.ajax({
-                    url : url_view,
-                    type : "GET",
-                    success : function(data)
-                    {
-                        var temp_aire = parseFloat(data[0].fields.temperatura);
-                        var temp_mar = parseFloat(data[0].fields.temperatura_agua);
-                        var viento = parseFloat(data[0].fields.viento);
-                        var hum_aire = parseFloat(data[0].fields.humedad);
-                        var inten_luz = parseFloat(data[0].fields.intensidad_luz);
-                        
-                        //medición temperatura agua
-                        var rangos_temp_mar = obj_dashboard.umbrales_temperatura_mar;
-                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[0], temp_mar, rangos_temp_mar);
-                        
-                        //medición temperatura aire
-                        var rangos_temp_aire = obj_dashboard.umbrales_temperatura_aire;
-                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[1], temp_aire, rangos_temp_aire);
+                
+                var temp_aire;
+                var hum_aire;
+                var temp_mar;
+                var viento;
+                var inten_luz;
+                var compas_mag;
+                var acelerometro_x;
+                var acelerometro_y;
+                var acelerometro_z;
 
-                        //medición humedad aire
-                        var rangos_hum_aire = obj_dashboard.umbrales_humedad_aire;
-                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[2], hum_aire, rangos_hum_aire);
+                var socket = io('http://localhost:4000');
 
-                        //medición intensidad luz
-                        var rangos_intensidad_luz = obj_dashboard.umbrales_intensidad_luz;
-                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[3], inten_luz, rangos_intensidad_luz);
+                socket.emit('obtener_todas_variables_fisicas', '1');
+                socket.on('ultimas_mediciones', function (mediciones) {
+                        temp_aire = mediciones.temperatura_aire;
+                        hum_aire = mediciones.humedad_aire;
+                        temp_mar = mediciones.temperatura_agua;
+                        viento = mediciones.viento;
+                        inten_luz = mediciones.intensidad_luz;
+                        compas_mag = mediciones.compas_mag;
+                        acelerometro_x = mediciones.acelerometro_x;
+                        acelerometro_y = mediciones.acelerometro_y;
+                        acelerometro_z = mediciones.acelerometro_z;
 
-                        //medición viento
-                        var rangos_viento = obj_dashboard.umbrales_viento;
-                        obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento);
 
-                    },
+                    //medición temperatura agua
+                    var rangos_temp_mar = obj_dashboard.umbrales_temperatura_mar;
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[0], temp_mar, rangos_temp_mar);
+                    
+                    //medición temperatura aire
+                    var rangos_temp_aire = obj_dashboard.umbrales_temperatura_aire;
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[1], temp_aire, rangos_temp_aire);
 
-                    // handle a non-successful response
-                    error : function(xhr,errmsg,err) {
-                        console.log(xhr.status + ": " + xhr.responseText);
-                    }
+                    //medición humedad aire
+                    var rangos_hum_aire = obj_dashboard.umbrales_humedad_aire;
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[2], hum_aire, rangos_hum_aire);
+
+                    //medición intensidad luz
+                    var rangos_intensidad_luz = obj_dashboard.umbrales_intensidad_luz;
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[3], inten_luz, rangos_intensidad_luz);
+
+                    //medición viento
+                    var rangos_viento = obj_dashboard.umbrales_viento;
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento);
+
                 });
+
+                
+                
+                
+
+                    
             },
 
 

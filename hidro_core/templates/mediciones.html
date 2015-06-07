@@ -29,7 +29,7 @@
                     <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
                 {% elif variable_fisica == 'intensidad_luz'%}
                     <div class="titulo text-center hide">Iluminancia vs Tiempo</div>
-                    <input type="hidden" id="y_nom_var_fisica" value="Luminosidad ">
+                    <input type="hidden" id="y_nom_var_fisica" value="Iluminancia ">
                     <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
                     <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
                     <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
@@ -46,13 +46,17 @@
                     <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
                     <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
                 {% elif variable_fisica == 'compas_mag'%}
-                    <div class="titulo text-center hide">Brújula vs Tiempo</div>
-                    {% comment %} <input type="hidden" id="y_nom_var_fisica" value="Brújula">
+                    <div class="titulo text-center hide">Grados vs Tiempo</div>
+                    <input type="hidden" id="y_nom_var_fisica" value="Brújula">
                     <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
                     <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
-                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}"> {% endcomment %}
+                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
                 {% elif variable_fisica == 'acelerometro'%}
-                    <div class="titulo text-center hide">Acelerómetro vs Tiempo</div>
+                    <div class="titulo text-center hide">Aceleración vs Tiempo</div>
+                    <input type="hidden" id="y_nom_var_fisica" value="Aceleración">
+                    <input type="hidden" id="y_var_fisica_umbral_verde" value="{{ umbrales_variables_fisicas.umbral_verde }}">
+                    <input type="hidden" id="y_var_fisica_umbral_amarillo" value="{{ umbrales_variables_fisicas.umbral_amarillo }}">
+                    <input type="hidden" id="y_var_fisica_umbral_naranja" value="{{ umbrales_variables_fisicas.umbral_naranja }}">
                 {% endif %}
             </div>
     </div>
@@ -66,75 +70,39 @@
     <div class="row">
         <div class="panel-title">
             <h3>Registros</h3>
-            Los datos se actualizan cada segundo.
+            Los datos mostrados actualizan cada segundo.
 
             
             {% comment %} <a id="" target="_blank" href="{% url 'hidro_core.views.linechart' %}"> Graph</a> {% endcomment %}
 
         </div>
-        {% comment %} <div class="panel-heading">
-            <!-- <div class="panel-title">Registros</div> -->
-            
-            <div class="panel-options">
-                <div class="btn-group">
-                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">
-                        <i class="glyphicon glyphicon-download"></i>
-                        Exportar 
-                        <span class="caret"></span>
-                    </button>
-                    <ul role="menu" class="dropdown-menu">
-                      <!-- <li><a href="#"><i class="fa fa-camera-retro fa-lg"></i>Excel</a></li> -->
-                      <li><a id="btn_excel" target ="_blank" target="_blank" href="{% url 'hidro_core.views.exportar_excel' equipo.id %}?variable_fisica={{ variable_fisica }}"><i class="fa fa-file-excel-o fa-lg"></i> Excel</a></li>
-                      <li><a id="btn_pdf" target="_blank" href="{% url 'hidro_core.views.exportar_pdf' equipo.id %}?variable_fisica={{ variable_fisica }}"><i class="fa fa-file-pdf-o fa-lg"></i> PDF</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div> {% endcomment %}
         <div class="panel-body">
-        <div id="tabla_mediciones">
-            <table class="table table-responsive">
-              <thead>
-                <th>Fecha</th>
-                <th>Hora</th>
-                {% if variable_fisica == 'temperatura_aire' %}
-                    <th>Temperatura (°C)</th>
-                {% elif variable_fisica == 'humedad_aire'%}
-                    <th>Humedad (%)</th>
-                {% elif variable_fisica == 'intensidad_luz'%}
-                    <th>Iluminancia(Lux)</th>
-                {% elif variable_fisica == 'temperatura_mar' %}
-                    <th>Temperatura Agua(°C)</th>
-                {% elif variable_fisica == 'velocidad_viento' %}
-                    <th>Velocidad Viento (m/s)</th>
-                {% elif variable_fisica == 'compas_mag' %}
-                    <th>Compas Magnético (Grados)</th>
-                {% elif variable_fisica == 'acelerometro' %}
-                    <th>Aceleración(m/s²)</th>
-                {% endif %}
-              </thead>
-              <tbody id="data_mediciones">
-                
-              </tbody>
-            </table>
-            
-            {% comment %}<ul class="pager wizard">
-                    {% if equipo_mediciones.has_previous %}
-                        <li class="previous disabled">
-                            <a href="?page={{ equipo_mediciones.previous_page_number }}" class="previous">Anterior</a>
-                        </li>
+            <div id="tabla_mediciones">
+                <table class="table table-responsive">
+                  <thead>
+                    <th class="text-center"><div class="fa fa-calendar"></div> Fecha</th>
+                    <th class="text-center"><div class="wi wi-time-3"></div> Hora</th>
+                    {% if variable_fisica == 'temperatura_aire' %}
+                        <th class="text-center"><div class="wi wi-thermometer"></div> Temperatura [°C]</th>
+                    {% elif variable_fisica == 'humedad_aire'%}
+                        <th class="text-center"><div class="wi wi-sprinkles"></div> Humedad [%]</th>
+                    {% elif variable_fisica == 'intensidad_luz'%}
+                        <th class="text-center"><div class="wi wi-horizon-alt"></div> Iluminancia[Lux]</th>
+                    {% elif variable_fisica == 'temperatura_mar' %}
+                        <th class="text-center"><div class="wi wi-thermometer"></div> Temperatura Agua[°C]</th>
+                    {% elif variable_fisica == 'velocidad_viento' %}
+                        <th class="text-center"> <div class="wi wi-strong-wind"></div> Velocidad Viento [m/s]</th>
+                    {% elif variable_fisica == 'compas_mag' %}
+                        <th class="text-center"><div class="wi wi-wind-default _45-deg"></div> Compas Magnético [°]</th>
+                    {% elif variable_fisica == 'acelerometro' %}
+                        <th class="text-center" style="width: 90px;"> Aceleración [m/s²]</th>
                     {% endif %}
-
-                    <span class="current">
-                        Página {{ equipo_mediciones.number }} de {{ equipo_mediciones.paginator.num_pages }}
-                    </span>
-
-                    {% if equipo_mediciones.has_next %}
-                        <li class="next"><a href="?page={{ equipo_mediciones.next_page_number }}" class="next">Siguiente</a>
-                        </li>
-                        
-                    {% endif %}
-            </ul>{% endcomment %}
-        </div>
+                  </thead>
+                  <tbody id="data_mediciones">
+                    
+                  </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <input type="hidden" id="variable_fisica" name="variable_fisica" value="{{ variable_fisica }}" >
@@ -218,6 +186,7 @@
                             seriesz.addPoint([time, medicion_variable.z]);
                         {% else %}    
                             var series = chart.series[0];
+                            console.info(medicion_variable);
                             series.addPoint([time, medicion_variable]);
                         {% endif %}
                     });
@@ -245,38 +214,40 @@
                 margin: 80
             },
 
-            plotBands: [
-                //estado verde
-                {
-                    color: 'rgba(113, 251, 191, .2)',
-                    from: y_var_fisica_umbral_base, // Start of the plot band
-                    to: y_var_fisica_umbral_verde // End of the plot band
-                },
+            
 
-                //Estado amarillo
-                {
-                    color: 'rgba(252, 252, 161, .2)',
-                    from: y_var_fisica_umbral_verde, // Start of the plot band
-                    to: y_var_fisica_umbral_amarillo // End of the plot band
+            // plotBands: [
+            //     //estado verde
+            //     {
+            //         color: 'rgba(113, 251, 191, .2)',
+            //         from: y_var_fisica_umbral_base, // Start of the plot band
+            //         to: y_var_fisica_umbral_verde // End of the plot band
+            //     },
 
-                },
+            //     //Estado amarillo
+            //     {
+            //         color: 'rgba(252, 252, 161, .2)',
+            //         from: y_var_fisica_umbral_verde, // Start of the plot band
+            //         to: y_var_fisica_umbral_amarillo // End of the plot band
 
-                //Estado naranja
-                {
-                    color: 'rgba(255, 204, 86, .2)',
-                    from: y_var_fisica_umbral_amarillo, // Start of the plot band
-                    to: y_var_fisica_umbral_naranja // End of the plot band
+            //     },
 
-                },
+            //     //Estado naranja
+            //     {
+            //         color: 'rgba(255, 204, 86, .2)',
+            //         from: y_var_fisica_umbral_amarillo, // Start of the plot band
+            //         to: y_var_fisica_umbral_naranja // End of the plot band
 
-                //Estado rojo
-                {
-                    color: 'rgba(254, 108, 105, .2)',
-                    from: y_var_fisica_umbral_naranja, // Start of the plot band
-                    to: y_var_fisica_umbral_naranja*1000 // End of the plot band
+            //     },
 
-                }
-            ],
+            //     //Estado rojo
+            //     {
+            //         color: 'rgba(254, 108, 105, .2)',
+            //         from: y_var_fisica_umbral_naranja, // Start of the plot band
+            //         to: y_var_fisica_umbral_naranja*1000 // End of the plot band
+
+            //     }
+            // ],
 
         },
 
@@ -298,9 +269,24 @@
             }]
         {% else %}
             series: [{
-                    name: 'Tiempo',
-                    data: []
-                }]
+                   name: 'Tiempo',
+                   data: [],
+                   zones: [{
+                       value: y_var_fisica_umbral_base,
+                       color: '#33CC33'
+                    }, {
+                       value: y_var_fisica_umbral_verde,
+                       color: '#33CC33'
+                    },{
+                       value: y_var_fisica_umbral_amarillo,
+                       color: '#fdfd41'
+                    }, {
+                       value: y_var_fisica_umbral_naranja,
+                       color: '#FF6600'
+                    },{
+                       color: '#fc2424'
+                    }],
+                 }]
         {% endif %}
     });
     </script>

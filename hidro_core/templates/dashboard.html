@@ -12,7 +12,7 @@
     <link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
 
     <link href="{{ STATIC_URL }}css/stats.css" rel="stylesheet">
-
+    <link href="{{ STATIC_URL }}css/weather-icons/css/weather-icons.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -101,7 +101,8 @@
 
         				<div class="col-md-3">
         					<div class="content-box-header">
-        						<div class="text-center"><b>Temperatura Aire [°C]<b></div>
+        						<div class="text-center"><b>Temperatura Aire [°C]<b>
+                    </div>
         					</div>
         					<div class="content-box-large box-with-header">
         						<p class="text-center">
@@ -163,6 +164,7 @@
                     <p class="text-center">
                     <input id="knob_vie" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
                   </p>
+                    <div class="row">&nbsp;</div>                  
                     <div class="row">
                       <div class="text-center">
                         <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'velocidad_viento' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
@@ -177,8 +179,10 @@
                   </div>
                   <div class="content-box-large box-with-header">
                     <p class="text-center">
-                    <input id="knob_bruj" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
-                  </p>
+                      <input id="knob_bruj" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+                    </p>
+                    <div class="row">&nbsp;</div>
+                    
                     <div class="row">
                       <div class="text-center">
                         <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'compas_mag' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
@@ -187,14 +191,29 @@
                   </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-6">
                   <div class="content-box-header">
-                    <div class="text-center">Acelerómetro</div>
+                      <div class="text-center">Acelerómetro [m/s²]</div>
                   </div>
+                  
                   <div class="content-box-large box-with-header">
-                    <p class="text-center">
-                    <input id="knob_acelero" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
-                  </p>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2"><span class="label label-default">Aceleración X</span></div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"><span class="label label-default">Aceleración Y</span></div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2"><span class="label label-default">Aceleración Z</span></div>
+                        
+                    </div>
+                    <br/>
+                    <div class="row text-center">
+                      <input id="knob_acelero_x" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="130" data-readonly="true">
+                      &nbsp;&nbsp;&nbsp;
+                      <input id="knob_acelero_y" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="130" data-readonly="true">
+                      &nbsp;&nbsp;&nbsp;
+                      <input id="knob_acelero_z" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="130" data-readonly="true">
+                    </div>
                     <div class="row">
                       <div class="text-center">
                         <a href="{% url 'hidro_core.views.medicionesxequipo' 1 'acelerometro' %}" class="btn btn-lg btn-block btn-primary"><i class="glyphicon glyphicon-list"></i> Ver Detalle</a>
@@ -254,13 +273,16 @@
 
          var obj_dashboard = {
 
-            ids_knobs : [ "knob_temp_mar", "knob_temp_aire", "knob_hum_aire", "knob_luz", "knob_vie","knob_acelero","knob_bruj"],
+            ids_knobs : [ "knob_temp_mar", "knob_temp_aire", "knob_hum_aire", "knob_luz", "knob_vie",
+                          "knob_bruj", "knob_acelero_x", "knob_acelero_y", "knob_acelero_z"],
 
             umbrales_temperatura_mar : [],
             umbrales_temperatura_aire : [],
             umbrales_humedad_aire : [],
             umbrales_intensidad_luz : [],
             umbrales_viento : [],
+            umbrales_compas : [],
+            umbrales_acelerometro : [],
 
             init : function ()
             {
@@ -271,9 +293,7 @@
                 obj_dashboard.obtener_datos_medidos_equipo(socket);
                 //setInterval(obj_dashboard.obtener_datos_medidos_equipo, 3000);
 
-                $(window).on('beforeunload', function(){
-                  socket.close();
-                });
+                
             },
 
             init_knobs : function (knobs)
@@ -395,6 +415,16 @@
                     var rangos_viento = obj_dashboard.umbrales_viento;
                     obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento);
 
+                    //medición compás magnético
+                    var rangos_compas = obj_dashboard.umbrales_compas;
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[5], compas_mag, rangos_compas);
+
+                    //medición acelerometro
+                    var rangos_acelerometro = obj_dashboard.umbrales_acelerometro;
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[6], acelerometro_x, rangos_acelerometro);
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[7], acelerometro_y, rangos_acelerometro);
+                    obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[8], acelerometro_z, rangos_acelerometro);
+
                 });     
             },
 
@@ -436,6 +466,18 @@
                         obj_dashboard.umbrales_viento.push(parseFloat(data[i].fields.umbral_verde));
                         obj_dashboard.umbrales_viento.push(parseFloat(data[i].fields.umbral_amarillo));
                         obj_dashboard.umbrales_viento.push(parseFloat(data[i].fields.umbral_naranja));
+
+                        i = 5;
+                        obj_dashboard.umbrales_compas.push(parseFloat(data[i].fields.umbral_base));
+                        obj_dashboard.umbrales_compas.push(parseFloat(data[i].fields.umbral_verde));
+                        obj_dashboard.umbrales_compas.push(parseFloat(data[i].fields.umbral_amarillo));
+                        obj_dashboard.umbrales_compas.push(parseFloat(data[i].fields.umbral_naranja));
+
+                        i = 6;
+                        obj_dashboard.umbrales_acelerometro.push(parseFloat(data[i].fields.umbral_base));
+                        obj_dashboard.umbrales_acelerometro.push(parseFloat(data[i].fields.umbral_verde));
+                        obj_dashboard.umbrales_acelerometro.push(parseFloat(data[i].fields.umbral_amarillo));
+                        obj_dashboard.umbrales_acelerometro.push(parseFloat(data[i].fields.umbral_naranja));
 
                     },
 

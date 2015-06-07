@@ -1,8 +1,8 @@
 {% for equipo_medicion in equipo_mediciones %}
     <tr>
-            <td>{{equipo_medicion.fecha_creacion|date:"d/m/Y"}}</td>
-            <td>{{equipo_medicion.fecha_creacion|date:"H:i:s"}}</td>
-            <td>
+            <td class="text-center" style="width: 30%;">{{ equipo_medicion.fecha_creacion|date:"d/m/Y" }}</td>
+            <td class="text-center" style="width: 30%;">{{ equipo_medicion.fecha_creacion|date:"H:i:s" }}</td>
+            <td class="text-center" style="width: 50%;">
                 
                 <!-- VARIABLE TEMPERATURA DE AGUA -->
                 {% if variable_fisica == 'temperatura_mar' %}

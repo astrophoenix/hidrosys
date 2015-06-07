@@ -167,16 +167,38 @@
     <!--  -->
     <script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
      <!-- Importo el archivo Javascript de Highcharts directamente desde su servidor -->
-    <script src="http://104.236.0.177:4000/socket.io/socket.io.js"></script>
+    <!-- <script src="http://104.236.0.177:4000/socket.io/socket.io.js"></script>-->
+    {% comment %} // <script src="http://localhost:4000/socket.io/socket.io.js"></script> {% endcomment %}
+    <script src="http://{{ IP_SERVER_PORT }}/socket.io/socket.io.js"></script>
      <!-- <script src="/socket.io/socket.io.js"></script>-->
     <script src="https://code.highcharts.com/highcharts.js"></script>
 
 
     <script>
+
     
-    var socket = io('http://104.236.0.177:4000');
+    var socket = io('http://{{ IP_SERVER_PORT }}');
+    //var socket = io('http://104.236.0.177:4000');
     // Creo un nuevo objeto 'Chart'
+
+    $(window).on('beforeunload', function(){
+        socket.close();
+    });
+    
     var chart;
+
+    var y_var_fisica_umbral_base = '{{ umbrales_variables_fisicas.umbral_base }}';
+        y_var_fisica_umbral_base = y_var_fisica_umbral_base.replace(/\,/g, '.');
+
+    var y_var_fisica_umbral_verde = $("#y_var_fisica_umbral_verde").val();
+        y_var_fisica_umbral_verde = y_var_fisica_umbral_verde.replace(/\,/g, '.');
+
+    var y_var_fisica_umbral_naranja = $("#y_var_fisica_umbral_naranja").val();
+        y_var_fisica_umbral_naranja = y_var_fisica_umbral_naranja.replace(/\,/g, '.');
+
+    var y_var_fisica_umbral_amarillo = $("#y_var_fisica_umbral_amarillo").val();
+        y_var_fisica_umbral_amarillo = y_var_fisica_umbral_amarillo.replace(/\,/g, '.');
+
     chart = new Highcharts.Chart({
         chart: {
             renderTo: 'chart', 
@@ -214,13 +236,53 @@
             tickPixelInterval: 150,
             maxZoom: 20 * 1000
         },
+
         yAxis: {
             minPadding: 0.2,
             maxPadding: 0.2,
             title: {
                 text: $('#y_nom_var_fisica').val(),
                 margin: 80
-            }
+            },
+
+            plotBands: [
+                //estado verde
+                {
+                    color: 'rgba(113, 251, 191, .2)',
+                    from: y_var_fisica_umbral_base, // Start of the plot band
+                    to: y_var_fisica_umbral_verde // End of the plot band
+                },
+
+                //Estado amarillo
+                {
+                    color: 'rgba(252, 252, 161, .2)',
+                    from: y_var_fisica_umbral_verde, // Start of the plot band
+                    to: y_var_fisica_umbral_amarillo // End of the plot band
+
+                },
+
+                //Estado naranja
+                {
+                    color: 'rgba(255, 204, 86, .2)',
+                    from: y_var_fisica_umbral_amarillo, // Start of the plot band
+                    to: y_var_fisica_umbral_naranja // End of the plot band
+
+                },
+
+                //Estado rojo
+                {
+                    color: 'rgba(254, 108, 105, .2)',
+                    from: y_var_fisica_umbral_naranja, // Start of the plot band
+                    to: y_var_fisica_umbral_naranja*1000 // End of the plot band
+
+                }
+            ],
+
+        },
+
+        tooltip: {
+            //pointFormat: "Value: {point.y:.2f} mm"
+            pointFormat: $('#y_nom_var_fisica').val() + " {point.y:.2f}"
         },
 
         {% if variable_fisica == 'acelerometro' %}

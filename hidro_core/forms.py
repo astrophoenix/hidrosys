@@ -69,7 +69,19 @@ class BuscarMedicionesForm(forms.Form):
         ('12', 'Diciembre')
     )
 
+	VARIABLES_FISICAS = (
+		('T', 'TODAS'),
+    	('TAI', 'Temperatura Aire'),
+    	('HAI', 'Humedad Aire'),
+    	('TAG',' Temperatura Agua'),
+    	('I', 'Iluminancia'),
+    	('VV', 'Velocidad Viento'),
+    	('AC', 'Acelerometro'),
+    	('CM', 'Compás Magnetico')
+    )
+
 	anio = forms.CharField(max_length = 5, widget=forms.TextInput({'class':'text-field form-control', 'style' : 'width:100%;' }))
-	mes = forms.ChoiceField(required = False, choices = MESES,widget=forms.Select(attrs={'class':'form-control'}) )
-	fecha_desde = forms.DateField(required = False, input_formats = ('%d/%m/%Y',),widget=forms.widgets.TextInput({'class':'form-control text-center'}))
-	fecha_hasta = forms.DateField(required = False, input_formats = ('%d/%m/%Y',),widget=forms.widgets.TextInput({'class':'form-control text-center'}))
+	mes = forms.ChoiceField(required=False, choices=MESES, widget=forms.Select(attrs={'class':'form-control'}) )
+	fecha_desde = forms.DateField(required=False, input_formats=('%d/%m/%Y',),widget=forms.widgets.TextInput({'class':'form-control text-center'}))
+	fecha_hasta = forms.DateField(required=False, input_formats=('%d/%m/%Y',),widget=forms.widgets.TextInput({'class':'form-control text-center'}))
+	variable_fisica = forms.ChoiceField(required = False, choices=VARIABLES_FISICAS, widget=forms.Select(attrs={'class':'form-control'}) )

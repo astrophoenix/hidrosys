@@ -225,10 +225,10 @@
 
     <!-- <script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>-->
      <!-- Importo el archivo Javascript de Highcharts directamente desde su servidor -->
-    <script src="http://104.236.0.177:4000/socket.io/socket.io.js"></script>
+    <script src="http://{{ IP_SERVER_PORT }}/socket.io/socket.io.js"></script>
     <!--<script src="https://code.highcharts.com/highcharts.js"></script>-->
 
-
+    {% comment %} // <script src="http://localhost:4000/socket.io/socket.io.js"></script> {% endcomment %}
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- jQuery UI -->
@@ -251,6 +251,7 @@
     <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.resize.js"></script>
 
     <script type="text/javascript">
+
          var obj_dashboard = {
 
             ids_knobs : [ "knob_temp_mar", "knob_temp_aire", "knob_hum_aire", "knob_luz", "knob_vie","knob_acelero","knob_bruj"],
@@ -265,8 +266,14 @@
             {
                 obj_dashboard.init_knobs(obj_dashboard.ids_knobs);
                 obj_dashboard.obtener_umbrales();
-                obj_dashboard.obtener_datos_medidos_equipo();
+                var socket = io('http://{{ IP_SERVER_PORT }}');
+                // var socket = io('http://localhost:4000');
+                obj_dashboard.obtener_datos_medidos_equipo(socket);
                 //setInterval(obj_dashboard.obtener_datos_medidos_equipo, 3000);
+
+                $(window).on('beforeunload', function(){
+                  socket.close();
+                });
             },
 
             init_knobs : function (knobs)
@@ -343,7 +350,7 @@
             // },
 
 
-            obtener_datos_medidos_equipo : function()
+            obtener_datos_medidos_equipo : function(socket)
             {
                 
                 var temp_aire;
@@ -356,8 +363,6 @@
                 var acelerometro_y;
                 var acelerometro_z;
 
-                var socket = io('http://104.236.0.177:4000');
-
                 socket.emit('obtener_todas_variables_fisicas', '1');
                 socket.on('ultimas_mediciones', function (mediciones) {
                         temp_aire = mediciones.temperatura_aire;
@@ -369,7 +374,6 @@
                         acelerometro_x = mediciones.acelerometro_x;
                         acelerometro_y = mediciones.acelerometro_y;
                         acelerometro_z = mediciones.acelerometro_z;
-
 
                     //medición temperatura agua
                     var rangos_temp_mar = obj_dashboard.umbrales_temperatura_mar;
@@ -391,13 +395,7 @@
                     var rangos_viento = obj_dashboard.umbrales_viento;
                     obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento);
 
-                });
-
-                
-                
-                
-
-                    
+                });     
             },
 
 
@@ -452,6 +450,7 @@
         
     $(function(){
         obj_dashboard.init();
+        
     }); 
 
     </script>

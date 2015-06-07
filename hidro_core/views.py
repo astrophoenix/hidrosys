@@ -86,6 +86,7 @@ def dashboard(request):
 	parametros = {
 		"usuario" : usuario, 
 		"titulo_modulo": titulo_modulo, 
+		"IP_SERVER_PORT" : settings.IP_SERVER_PORT
 	}
 	return render_to_response('dashboard.html', parametros, context_instance=RequestContext(request))
 
@@ -273,7 +274,9 @@ def medicionesxequipo(request, id = None, variable_fisica=None):
 	parametros = {	"titulo_modulo": titulo_modulo, 
 					"usuario" : usuario, "variable_fisica" : variable_fisica, 
 					"equipo_mediciones": equipo_mediciones, 
-					"equipo": equipo, 'umbrales_variables_fisicas' : umbrales_variables_fisicas}
+					"equipo": equipo, 'umbrales_variables_fisicas' : umbrales_variables_fisicas,
+					"IP_SERVER_PORT" : settings.IP_SERVER_PORT
+					}
 	return render_to_response('mediciones.html',parametros, context_instance=RequestContext(request))
 
 

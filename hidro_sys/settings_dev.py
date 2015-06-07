@@ -89,5 +89,3 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'galexanderomero24@gmail.com'
 EMAIL_HOST_PASSWORD = '*******'
 EMAIL_USE_TLS = True
-
-IP_SERVER_PORT = '104.236.0.177:4000'

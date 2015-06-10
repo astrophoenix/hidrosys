@@ -179,7 +179,7 @@
                   </div>
                   <div class="content-box-large box-with-header">
                     <p class="text-center">
-                      <input id="knob_bruj" type="text" value="0" class="knob second" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
+                      <input id="knob_bruj" type="text" value="0" class="knob second" data-min="0" data-max="360" data-thickness=".3" data-inputColor="#333" data-fgColor="#8ac368" data-width="150" data-readonly="true">
                     </p>
                     <div class="row">&nbsp;</div>
                     
@@ -292,7 +292,6 @@
                 // var socket = io('http://localhost:4000');
                 obj_dashboard.obtener_datos_medidos_equipo(socket);
                 //setInterval(obj_dashboard.obtener_datos_medidos_equipo, 3000);
-
                 
             },
 
@@ -308,6 +307,14 @@
             {
               variable_fisica = "#" + variable_fisica;
               $(variable_fisica).val(valor_medicion).trigger('change');
+              
+              
+              var valor_max = 0;
+              if (variable_fisica == "#knob_bruj"){
+                valor_max = 360;
+              }else{
+                valor_max = 100;
+              }
 
               var valor_base = rangos_temp_mar[0];
               var valor_max_verde = rangos_temp_mar[1];
@@ -315,60 +322,16 @@
               var valor_max_naranja = rangos_temp_mar[3];
 
               if (valor_base <= valor_medicion && valor_medicion <= valor_max_verde){ // Rango Estado Verde
-                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#5cb85c", "readOnly": true });
+                $(variable_fisica).trigger('configure',{min: '0', max: valor_max, "fgColor" : "#5cb85c", "readOnly": true });
               }else if (valor_max_verde < valor_medicion && valor_medicion <= valor_max_amarillo){ // Rango Estado Amarillo
-                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#F4FA58", "readOnly": true });
+                $(variable_fisica).trigger('configure',{min: '0', max: valor_max, "fgColor" : "#F4FA58", "readOnly": true });
               }else if (valor_max_amarillo < valor_medicion && valor_medicion <= valor_max_naranja){ // Rango Estado Naranja
-                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#f0ad4e", "readOnly": true });
+                $(variable_fisica).trigger('configure',{min: '0', max: valor_max, "fgColor" : "#f0ad4e", "readOnly": true });
               }else{ // Rango Estado Rojo
-                $(variable_fisica).trigger('configure',{min: '0', max: '100', "fgColor" : "#d9534f", "readOnly": true });
+                $(variable_fisica).trigger('configure',{min: '0', max: valor_max, "fgColor" : "#d9534f", "readOnly": true });
               }
               
             },
-
-            // obtener_datos_medidos_equipo : function()
-            // {
-            //     var url_view = "{% url 'hidro_core.views.obtener_datos_medidos_equipo' 1 %}";
-            //     $.ajax({
-            //         url : url_view,
-            //         type : "GET",
-            //         success : function(data)
-            //         {
-            //             var temp_aire = parseFloat(data[0].fields.temperatura);
-            //             var temp_mar = parseFloat(data[0].fields.temperatura_agua);
-            //             var viento = parseFloat(data[0].fields.viento);
-            //             var hum_aire = parseFloat(data[0].fields.humedad);
-            //             var inten_luz = parseFloat(data[0].fields.intensidad_luz);
-                        
-            //             //medición temperatura agua
-            //             var rangos_temp_mar = obj_dashboard.umbrales_temperatura_mar;
-            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[0], temp_mar, rangos_temp_mar);
-                        
-            //             //medición temperatura aire
-            //             var rangos_temp_aire = obj_dashboard.umbrales_temperatura_aire;
-            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[1], temp_aire, rangos_temp_aire);
-
-            //             //medición humedad aire
-            //             var rangos_hum_aire = obj_dashboard.umbrales_humedad_aire;
-            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[2], hum_aire, rangos_hum_aire);
-
-            //             //medición intensidad luz
-            //             var rangos_intensidad_luz = obj_dashboard.umbrales_intensidad_luz;
-            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[3], inten_luz, rangos_intensidad_luz);
-
-            //             //medición viento
-            //             var rangos_viento = obj_dashboard.umbrales_viento;
-            //             obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento);
-
-            //         },
-
-            //         // handle a non-successful response
-            //         error : function(xhr,errmsg,err) {
-            //             console.log(xhr.status + ": " + xhr.responseText);
-            //         }
-            //     });
-            // },
-
 
             obtener_datos_medidos_equipo : function(socket)
             {

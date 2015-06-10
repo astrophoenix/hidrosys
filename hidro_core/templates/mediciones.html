@@ -148,10 +148,6 @@
     var socket = io('http://{{ IP_SERVER_PORT }}');
     //var socket = io('http://104.236.0.177:4000');
     // Creo un nuevo objeto 'Chart'
-
-    $(window).on('beforeunload', function(){
-        socket.close();
-    });
     
     var chart;
 
@@ -167,9 +163,19 @@
     var y_var_fisica_umbral_amarillo = $("#y_var_fisica_umbral_amarillo").val();
         y_var_fisica_umbral_amarillo = y_var_fisica_umbral_amarillo.replace(/\,/g, '.');
 
+
+
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
     chart = new Highcharts.Chart({
         chart: {
             renderTo: 'chart', 
+            type: 'spline',
+            animation: Highcharts.svg,
             defaultSeriesType: 'spline',
             events: {
                 load: function() {
@@ -186,8 +192,7 @@
                             seriesz.addPoint([time, medicion_variable.z]);
                         {% else %}    
                             var series = chart.series[0];
-                            console.info(medicion_variable);
-                            series.addPoint([time, medicion_variable]);
+                            series.addPoint([time, medicion_variable], true, true);
                         {% endif %}
                     });
 
@@ -270,7 +275,20 @@
         {% else %}
             series: [{
                    name: 'Tiempo',
-                   data: [],
+                   data: (function() {
+                            // generate some points to render before real samples arrive from feed
+                            var data = [],
+                                time = (new Date()).getTime(),
+                                i;
+                            // 20 samples, starting 19 ms ago up to present time when feed starts plotting
+                            for (i = -19; i <= 0; i++) {
+                                data.push({
+                                    x: time + (i * 1000),
+                                    y: 0
+                                });
+                            }
+                            return data;
+                        })(),
                    zones: [{
                        value: y_var_fisica_umbral_base,
                        color: '#33CC33'

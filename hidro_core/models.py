@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Equipo(models.Model):
+    """ Modelo que representa un equipo de medición de datos
+    """
     ACTIVO = 'A'
     INACTIVO = 'I'
     ESTADO = (

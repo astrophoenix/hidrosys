@@ -15,6 +15,7 @@ class Equipo(models.Model):
     fecha_modificacion = models.DateTimeField(auto_now = True)
 
 class EquipoMedicion(models.Model):
+    """ Modelo que representa cada valor medido de los sensores """
     equipo = models.ForeignKey(Equipo)
     temperatura = models.DecimalField(max_digits = 11, decimal_places = 2)
     humedad = models.DecimalField(max_digits = 11, decimal_places = 2)

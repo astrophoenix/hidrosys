@@ -29,10 +29,10 @@ class EquipoMedicion(models.Model):
 
 
 class UmbralMedidaFisica(models.Model):
+    """ Modelo que define los umbrales para cada variable física medida."""
     nom_variable_fisica = models.CharField(max_length = 100)
     variable_fisica = models.CharField(max_length = 100)
     umbral_base = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
     umbral_verde = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
     umbral_amarillo = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
     umbral_naranja = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
-    

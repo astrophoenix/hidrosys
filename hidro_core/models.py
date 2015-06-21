@@ -18,23 +18,31 @@ class Equipo(models.Model):
 class EquipoMedicion(models.Model):
     
     equipo = models.ForeignKey(Equipo)
-    temperatura = models.DecimalField(max_digits = 11, decimal_places = 2)
-    humedad = models.DecimalField(max_digits = 11, decimal_places = 2)
-    intensidad_luz = models.DecimalField(max_digits = 11, decimal_places = 2)
-    temperatura_agua = models.DecimalField(max_digits = 11, decimal_places = 2)
-    viento = models.DecimalField(max_digits = 11, decimal_places = 2)
-    compaz_mag = models.DecimalField(max_digits = 11, decimal_places = 2)
-    acelerometro_x = models.DecimalField(max_digits = 11, decimal_places = 2)
-    acelerometro_y = models.DecimalField(max_digits = 11, decimal_places = 2)
-    acelerometro_z = models.DecimalField(max_digits = 11, decimal_places = 2)
+    temperatura = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
+    humedad = models.DecimalField(max_digits = 11, decimal_places = 2,null=True)
+    intensidad_luz = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
+    temperatura_agua = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
+    viento = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
+    compaz_mag = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
+    acelerometro_x = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
+    acelerometro_y = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
+    acelerometro_z = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add = True)
 
 
 class UmbralMedidaFisica(models.Model):
-    
-    nom_variable_fisica = models.CharField(max_length = 100)
-    variable_fisica = models.CharField(max_length = 100)
+    nom_variable_fisica = models.CharField(max_length = 100, null=True)
+    variable_fisica = models.CharField(max_length = 100, null=True)
     umbral_base = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
     umbral_verde = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
     umbral_amarillo = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
     umbral_naranja = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
+
+class Notificacion(models.Model):
+    
+    LEIDA = 'L'
+    NO_LEIDA = 'NL'
+
+    descripcion = models.CharField(max_length=100, null=True)
+    estado = models.CharField(max_length=2, null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)

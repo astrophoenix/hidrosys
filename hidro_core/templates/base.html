@@ -58,7 +58,7 @@
                     </div>
                   </div>
                </div>
-               <div class="col-md-2">
+               <div class="col-md-7">
                   <div class="navbar navbar-inverse" role="banner">
                       <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
                         <ul class="nav navbar-nav">
@@ -70,6 +70,19 @@
                           </li>
                         </ul>
                       </nav>
+
+                      <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
+                        <ul class="nav navbar-nav">
+                          <li id="lista_notificaciones">
+                            <a href="{% url 'hidro_core.views.notificaciones' %}">
+                              Notificaciones
+                              <span id="camp_notificacion" class="bell glyphicon glyphicon_big glyphicon-bell" aria-hidden="true"></span>
+                              <div class="position_badge"><span id="num_notif_no_leidas" class="badge badge-danger hide">0</span></div>
+                            </a>
+                          </li>
+                        </ul>
+                      </nav>
+
                   </div>
                </div>
             </div>
@@ -156,6 +169,8 @@
 
     <link href="{{ STATIC_URL }}vendors/datatables/dataTables.bootstrap.css" rel="stylesheet" media="screen">
 
+    
+    <script src="http://{{ IP_SERVER_PORT }}/socket.io/socket.io.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="{{ STATIC_URL }}js/globalhidro.js"></script>
     <script src="https://code.jquery.com/jquery.js"></script>
@@ -184,6 +199,170 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 
     <!--<script src="{{ STATIC_URL }}js/forms.js"></script>-->
+    
+
+    <script type="text/javascript">
+      
+      var obj_base = {
+
+          umbrales_temperatura_mar : [],
+          umbrales_temperatura_aire : [],
+          umbrales_humedad_aire : [],
+          umbrales_intensidad_luz : [],
+          umbrales_viento : [],
+          umbrales_compas : [],
+          umbrales_acelerometro : [],
+
+          valida_medicion : function (variable_fisica, valor_medicion, rangos_umbrales, socket)
+          {
+                
+              var valor_max_amarillo = rangos_umbrales[0];
+              var valor_max_naranja = rangos_umbrales[1];
+              var crear_alerta = false;
+
+              if (valor_max_amarillo < valor_medicion && valor_medicion <= valor_max_naranja){ // Rango Estado Naranja
+                crear_alerta = true;
+                var msg_notificacion = obj_base.generar_mensaje_notifiacion (variable_fisica, valor_medicion, estado="NARANJA");
+              }else if (valor_medicion > valor_max_naranja ){ // Rango Estado Rojo
+                crear_alerta = true;
+                var msg_notificacion = obj_base.generar_mensaje_notifiacion (variable_fisica, valor_medicion, estado="ROJA");
+              }
+
+              if (crear_alerta == true){
+                socket.emit('crear_notificacion', msg_notificacion);
+              }
+
+              return crear_alerta;
+
+          },
+
+          generar_mensaje_notifiacion : function (varible_fisica, valor_medicion, estado) 
+          {
+
+            if (varible_fisica == "temperatura_agua")
+                var msg_notificacion = "Alerta "+ estado +" Temperatura Agua en : " + valor_medicion + "°C";
+            if (varible_fisica == "temperatura_aire")
+                var msg_notificacion = "Alerta "+ estado +" Temperatura Ambiente en : " + valor_medicion + "°C";
+            if (varible_fisica == "humedad_aire")
+                var msg_notificacion = "Alerta "+ estado +" Humedad Aire en : " + valor_medicion + "%";
+            if (varible_fisica == "intensidad_luz")
+                var msg_notificacion = "Alerta "+ estado +" Iluminancia en : " + valor_medicion + "Lux";
+            if (varible_fisica == "Velocidad_aire")
+                var msg_notificacion = "Alerta "+ estado +" Velocidad Viento en : " + valor_medicion + "m/s";
+
+              return msg_notificacion;
+          },
+
+
+          obtener_umbrales : function ()
+          {
+              var url_view = "{% url 'hidro_core.views.obtener_umbrales' %}";
+              $.ajax({
+                  url : url_view,
+                  type : "GET",
+                  success : function(data)
+                  {
+                      var i = 0;
+                      obj_base.umbrales_temperatura_aire.push(parseFloat(data[i].fields.umbral_amarillo));
+                      obj_base.umbrales_temperatura_aire.push(parseFloat(data[i].fields.umbral_naranja));
+
+                      i = 1;
+                      obj_base.umbrales_humedad_aire.push(parseFloat(data[i].fields.umbral_amarillo));
+                      obj_base.umbrales_humedad_aire.push(parseFloat(data[i].fields.umbral_naranja));
+
+                      i = 2;
+                      obj_base.umbrales_temperatura_mar.push(parseFloat(data[i].fields.umbral_amarillo));
+                      obj_base.umbrales_temperatura_mar.push(parseFloat(data[i].fields.umbral_naranja));
+
+                      i = 3;
+                      obj_base.umbrales_intensidad_luz.push(parseFloat(data[i].fields.umbral_amarillo));
+                      obj_base.umbrales_intensidad_luz.push(parseFloat(data[i].fields.umbral_naranja));
+
+                      i = 4;
+                      obj_base.umbrales_viento.push(parseFloat(data[i].fields.umbral_amarillo));
+                      obj_base.umbrales_viento.push(parseFloat(data[i].fields.umbral_naranja));
+
+                      i = 5;
+                      obj_base.umbrales_compas.push(parseFloat(data[i].fields.umbral_amarillo));
+                      obj_base.umbrales_compas.push(parseFloat(data[i].fields.umbral_naranja));
+
+                      i = 6;
+                      obj_base.umbrales_acelerometro.push(parseFloat(data[i].fields.umbral_amarillo));
+                      obj_base.umbrales_acelerometro.push(parseFloat(data[i].fields.umbral_naranja));
+
+                  },
+
+                  // handle a non-successful response
+                  error : function(xhr,errmsg,err) {
+                      console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the 
+                  }
+              });
+          },
+
+          
+          init : function (socket){
+          
+              obj_base.obtener_umbrales();
+              
+              var temp_aire;
+              var hum_aire;
+              var temp_mar;
+              var viento;
+              var inten_luz;
+              var compas_mag;
+              var acelerometro_x;
+              var acelerometro_y;
+              var acelerometro_z;
+
+              socket.emit('obtener_todas_variables_fisicas', '1');
+              socket.on('ultimas_mediciones', function (mediciones) {
+                    temp_aire = mediciones.temperatura_aire;
+                    hum_aire = mediciones.humedad_aire;
+                    temp_mar = mediciones.temperatura_agua;
+                    viento = mediciones.viento;
+                    inten_luz = mediciones.intensidad_luz;
+                    compas_mag = mediciones.compas_mag;
+                    acelerometro_x = mediciones.acelerometro_x;
+                    acelerometro_y = mediciones.acelerometro_y;
+                    acelerometro_z = mediciones.acelerometro_z;
+                    num_notificaciones = mediciones.num_notificaciones;
+
+                    var arr_vibrar_alerta = [];
+                    var vibrar_alerta;
+                    vibrar_alerta = obj_base.valida_medicion("temperatura_agua", temp_mar, obj_base.umbrales_temperatura_mar, socket);
+                    arr_vibrar_alerta.push(vibrar_alerta);
+                    vibrar_alerta = obj_base.valida_medicion("temperatura_aire", temp_aire, obj_base.umbrales_temperatura_aire, socket);
+                    arr_vibrar_alerta.push(vibrar_alerta);
+                    vibrar_alerta = obj_base.valida_medicion("humedad_aire", hum_aire, obj_base.umbrales_humedad_aire,socket);
+                    arr_vibrar_alerta.push(vibrar_alerta);
+                    vibrar_alerta = obj_base.valida_medicion("intensidad_luz", inten_luz, obj_base.umbrales_intensidad_luz,socket);
+                    arr_vibrar_alerta.push(vibrar_alerta);
+                    vibrar_alerta = obj_base.valida_medicion("Velocidad_aire", viento, obj_base.umbrales_viento,socket);
+                    arr_vibrar_alerta.push(vibrar_alerta);
+
+                    alertas = arr_vibrar_alerta.filter(function(value){ return value === true; }).length
+                    
+                    if(alertas > 0){
+                        socket.emit('obtener_notificaciones', '1');
+                        socket.on('notificaciones_noleidas', function (data) {
+                            $("#num_notif_no_leidas").html("");
+                            if ($("#num_notif_no_leidas").hasClass('hide'))
+                              $("#num_notif_no_leidas").removeClass('hide');
+
+                            $("#num_notif_no_leidas").html(data.num_notificaciones_noleidas);
+                        });
+                    }
+              });
+          }
+      }      
+   
+
+      $(function(){        
+          var socket = io('http://{{ IP_SERVER_PORT }}');
+          obj_base.init(socket);
+      });
+
+    </script>
     {% block extra_js %}
         
     {% endblock %}

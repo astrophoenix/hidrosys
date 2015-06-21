@@ -16,7 +16,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
-from hidro_core.models import Equipo, EquipoMedicion, UmbralMedidaFisica
+from hidro_core.models import Equipo, EquipoMedicion, UmbralMedidaFisica, Notificacion
 from hidro_core.forms import BuscarMedicionesForm, UmbralForm
 #from django.core.mail import send_mail
 import json
@@ -125,6 +125,7 @@ def configuracion(request):
 		"message" : message, 
 		"usuario" : usuario, 
 		"titulo_modulo": titulo_modulo, 
+		"IP_SERVER_PORT" : settings.IP_SERVER_PORT,
 		'formset': formset
 	}
 
@@ -237,7 +238,8 @@ def reporte(request):
 		"mediciones": mediciones, 
 		"message_error" : message_error,
 		"message" : message,
-		"form_buscar":form_buscar
+		"form_buscar":form_buscar,
+		"IP_SERVER_PORT" : settings.IP_SERVER_PORT
 	}
 
 	response = render_to_response('reporte.html', parametros, context_instance=RequestContext(request))
@@ -605,6 +607,45 @@ def linechart(request):
     #get a GIF (or PNG, JPG, or whatever)
     binaryStuff = d.asString('gif')
     return HttpResponse(binaryStuff, 'image/gif')
+
+
+@login_required
+def notificaciones(request):
+	titulo_modulo = "Notificaciones "
+	usuario, message, message_success, message_error = None, None, None, None
+
+	if 'message_success' in request.COOKIES:
+		message_success = request.COOKIES['message_success']
+		message = request.COOKIES['message']
+
+	
+	usuario = request.user.username
+	parametros = {
+		"message_success" : message_success,
+		"message_error" : message_error,
+		"message" : message, 
+		"usuario" : usuario, 
+		"titulo_modulo": titulo_modulo, 
+		"IP_SERVER_PORT" : settings.IP_SERVER_PORT,
+	}
+
+	response = render_to_response('notificaciones.html',parametros, context_instance=RequestContext(request))
+	response.delete_cookie('message_success')
+	response.delete_cookie('message_error')
+	response.delete_cookie('message')
+	return response
+
+@login_required
+def notificacion(request):
+	
+	if 'id' in request.GET:
+		id_notif = request.GET['id']
+		notificacion = Notificacion.objects.get(pk=int(id_notif))
+		notificacion.estado = Notificacion.LEIDA
+		notificacion.save()
+
+	response = HttpResponseRedirect(reverse(notificaciones))
+	return response
 
 @login_required
 def registrar_obtener_equipo(request, id = None):

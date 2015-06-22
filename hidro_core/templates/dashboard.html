@@ -295,7 +295,7 @@
             {
                 obj_dashboard.init_knobs(obj_dashboard.ids_knobs);
                 obj_dashboard.obtener_umbrales();
-                var socket = io('http://{{ IP_SERVER_PORT }}', {'multiplex': false});
+                var socket = io('http://{{ IP_SERVER_PORT }}');
                 obj_dashboard.obtener_datos_medidos_equipo(socket);
             },
 
@@ -325,7 +325,7 @@
                 return msg_notificacion;
             },
 
-            validar_medicion : function (variable_fisica, valor_medicion, rangos_var_fisica, socket=0)
+            validar_medicion : function (variable_fisica, valor_medicion, rangos_var_fisica)
             {
                 variable_fisica = "#" + variable_fisica;
                 $(variable_fisica).val(valor_medicion).trigger('change');
@@ -358,7 +358,25 @@
                 }
 
                 if (vibra_alerta == true){
-                  socket.emit('crear_notificacion', msg_notificacion);
+                  
+                    var params = {
+                      crear_notificacion : 1,
+                      descripcion : msg_notificacion
+                    };
+                    
+                    var url_view = "{% url 'hidro_core.views.obtener_notificaciones' %}";
+                    $.ajax({
+                      url : url_view,
+                      type : "GET",
+                      data:params,
+                      success : function(data)
+                      {
+                          $("#num_notif_no_leidas").html("");
+                          if ($("#num_notif_no_leidas").hasClass('hide'))
+                            $("#num_notif_no_leidas").removeClass('hide');
+                          $("#num_notif_no_leidas").html(data.length);  
+                      }
+                    });                    
                 }
 
                 return vibra_alerta;
@@ -379,9 +397,8 @@
                 var acelerometro_y;
                 var acelerometro_z;
 
-                //socket.emit('obtener_todas_variables_fisicas', '1');
+                socket.emit('obtener_todas_variables_fisicas', '1');
                 socket.on('ultimas_mediciones', function (mediciones) {
-                        console.info("meidciones");
                         temp_aire = mediciones.temperatura_aire;
                         hum_aire = mediciones.humedad_aire;
                         temp_mar = mediciones.temperatura_agua;
@@ -396,37 +413,37 @@
                     arr_vibrar_alerta = [];
                     //medición temperatura agua
                     var rangos_temp_mar = obj_dashboard.umbrales_temperatura_mar;
-                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[0], temp_mar, rangos_temp_mar,socket);
+                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[0], temp_mar, rangos_temp_mar);
                     arr_vibrar_alerta.push(vibrar_alerta);
                     //medición temperatura aire
                     var rangos_temp_aire = obj_dashboard.umbrales_temperatura_aire;
-                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[1], temp_aire, rangos_temp_aire,socket);
+                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[1], temp_aire, rangos_temp_aire);
                     arr_vibrar_alerta.push(vibrar_alerta);
                     //medición humedad aire
                     var rangos_hum_aire = obj_dashboard.umbrales_humedad_aire;
-                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[2], hum_aire, rangos_hum_aire,socket);
+                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[2], hum_aire, rangos_hum_aire);
                     arr_vibrar_alerta.push(vibrar_alerta);
                     //medición intensidad luz
                     var rangos_intensidad_luz = obj_dashboard.umbrales_intensidad_luz;
-                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[3], inten_luz, rangos_intensidad_luz,socket);
+                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[3], inten_luz, rangos_intensidad_luz);
                     arr_vibrar_alerta.push(vibrar_alerta);
                     //medición viento
                     var rangos_viento = obj_dashboard.umbrales_viento;
-                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento, socket);
+                    vibrar_alerta = obj_dashboard.validar_medicion(obj_dashboard.ids_knobs[4], viento, rangos_viento);
                     arr_vibrar_alerta.push(vibrar_alerta);
 
                     alertas = arr_vibrar_alerta.filter(function(value){ return value === true; }).length
 
-                    if(alertas > 0)
-                    {
-                        socket.emit('obtener_notificaciones', '1');
-                        socket.on('notificaciones_noleidas', function (data) {
-                            $("#num_notif_no_leidas").html("");
-                            if ($("#num_notif_no_leidas").hasClass('hide'))
-                              $("#num_notif_no_leidas").removeClass('hide');
-                            $("#num_notif_no_leidas").html(data.num_notificaciones_noleidas);
-                        });
-                    }
+                    // if(alertas > 0)
+                    // {
+                    //     socket.emit('obtener_notificaciones', '1');
+                    //     socket.on('notificaciones_noleidas', function (data) {
+                    //         $("#num_notif_no_leidas").html("");
+                    //         if ($("#num_notif_no_leidas").hasClass('hide'))
+                    //           $("#num_notif_no_leidas").removeClass('hide');
+                    //         $("#num_notif_no_leidas").html(data.num_notificaciones_noleidas);
+                    //     });
+                    // }
                     
                     //medición compás magnético
                     var rangos_compas = obj_dashboard.umbrales_compas;

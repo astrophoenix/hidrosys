@@ -629,11 +629,38 @@ def notificaciones(request):
 		"IP_SERVER_PORT" : settings.IP_SERVER_PORT,
 	}
 
+	notificaiones_no_leidas = Notificacion.objects.filter(estado=Notificacion.NO_LEIDA)
+	for n in notificaiones_no_leidas:
+		n.estado = Notificacion.LEIDA
+		n.save()
+
 	response = render_to_response('notificaciones.html',parametros, context_instance=RequestContext(request))
 	response.delete_cookie('message_success')
 	response.delete_cookie('message_error')
 	response.delete_cookie('message')
 	return response
+
+@login_required
+def obtener_notificaciones(request):
+	
+	if 'crear_notificacion' in request.GET:
+
+		if request.GET['crear_notificacion'] == '1':
+			descripcion = request.GET['descripcion']
+			notificacion = Notificacion(descripcion=descripcion, estado=Notificacion.NO_LEIDA);
+			notificacion.save()
+	
+	notificaciones = Notificacion.objects.filter(estado=Notificacion.NO_LEIDA).order_by('-id')[:10]
+	json_notificaciones = serializers.serialize("json", notificaciones)
+	return HttpResponse(json_notificaciones, content_type='application/json')
+
+
+@login_required
+def obtener_todas_notificaciones(request):
+	notificaciones = Notificacion.objects.filter().order_by('-id')[:10]
+	json_notificaciones = serializers.serialize("json", notificaciones)
+	return HttpResponse(json_notificaciones, content_type='application/json')
+
 
 @login_required
 def notificacion(request):

@@ -17,7 +17,7 @@
 
                 init : function(socket)
                 {
-                    obj_notificacion.listar_notificaciones(socket);
+                    obj_notificacion.listar_notificaciones();
                     $(".modificar_estado_notif").click(function(){
                         el = $(this)
                         obj_notificacion.notificacion_estado(el);
@@ -27,8 +27,6 @@
                 
                 notificacion_estado : function(el)
                 {
-
-                    console.info(el.attr('id'));
                     var url_view = "{% url 'hidro_core.views.notificacion' %}?id="+el.attr('id');
                     $.ajax({
                         url : url_view,
@@ -48,39 +46,47 @@
 
                 listar_notificaciones : function(socket)
                 {
-                    socket.emit('obtener_notificaciones_general', '1');
-                    socket.on('notificaciones', function (data) {
-                        notificaciones = data.detalles_notificaciones;
-                        //console.info(notificaciones);
-                        var notificaciones_html = ''
+                    var params = {
+                        notificaciones : 1
+                    }   
+
+                    var url_view = "{% url 'hidro_core.views.obtener_todas_notificaciones' %}";
+                    $.ajax({
+                      url : url_view,
+                      type : "GET",
+                      data:params,
+                      success : function(notificaciones)
+                      {
+                        
+                        var notificaciones_html = '';
                         for (var i = 0; i < notificaciones.length; i++) {
                             
-                            var fecha = new Date(notificaciones[i].fecha_creacion)
+                            var fecha = new Date(notificaciones[i].fields.fecha_creacion)
                             var date = fecha.getDate()+"/"+fecha.getMonth()+"/"+fecha.getFullYear()+" - "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds();
                             
-                            // notificaciones_html += "<a href='{% url 'hidro_core.views.notificacion' %}?id="+notificaciones[i].id+"' class='list-group-item'>"+date+" : "+notificaciones[i].descripcion+" ESTADO : "+notificaciones[i].estado+"</a>";
-
+                            
                             if (notificaciones[i].estado = 'NL'){
-                                notificaciones_html += "<a href='javascript:void(0);' class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].descripcion+"<span class='badge badge-info glyphicon glyphicon-tag'>No Leído</span> </a>";
+                                notificaciones_html += "<a href='javascript:void(0);' class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].fields.descripcion+"<span class='badge badge-info glyphicon glyphicon-tag'>No Leído</span> </a>";
                             }else{
-                                notificaciones_html += "<a href='javascript:void(0);'class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].descripcion+"<span class='badge glyphicon glyphicon-tag'>Leído</span> </a>";
+                                notificaciones_html += "<a href='javascript:void(0);'class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].fields.descripcion+"<span class='badge glyphicon glyphicon-tag'>Leído</span> </a>";
                                 
                             }
-
                         };
-
                         // 
-
                         $("#detalle_notificaciones").html(notificaciones_html);
-                    });
+                      }
+                    }); 
+                    
                 }
 
             };
 
 
             $(function () {
-               var socket2 = io('http://{{ IP_SERVER_PORT }}');
-               obj_notificacion.init(socket2);
+               
+               obj_notificacion.init();
             });
+
+            
     </script>
 {% endblock %}

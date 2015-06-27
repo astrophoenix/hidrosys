@@ -17,7 +17,8 @@
 
                 init : function(socket)
                 {
-                    obj_notificacion.listar_notificaciones();
+                    obj_notificacion.listar_notificaciones(); 
+                    setInterval(function(){ obj_notificacion.listar_notificaciones(); }, 3000);
                     $(".modificar_estado_notif").click(function(){
                         el = $(this)
                         obj_notificacion.notificacion_estado(el);
@@ -64,15 +65,16 @@
                             var fecha = new Date(notificaciones[i].fields.fecha_creacion)
                             var date = fecha.getDate()+"/"+fecha.getMonth()+"/"+fecha.getFullYear()+" - "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds();
                             
-                            
-                            if (notificaciones[i].estado = 'NL'){
-                                notificaciones_html += "<a href='javascript:void(0);' class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].fields.descripcion+"<span class='badge badge-info glyphicon glyphicon-tag'>No Leído</span> </a>";
-                            }else{
-                                notificaciones_html += "<a href='javascript:void(0);'class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].fields.descripcion+"<span class='badge glyphicon glyphicon-tag'>Leído</span> </a>";
+                            notificaciones_html += "<a href='javascript:void(0);' class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].fields.descripcion+"<span class='badge badge-info glyphicon glyphicon-tag'>&nbsp;</span> </a>";
+
+                            // if (notificaciones[i].estado = 'NL'){
+                            //     notificaciones_html += "<a href='javascript:void(0);' class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].fields.descripcion+"<span class='badge badge-info glyphicon glyphicon-tag'></span> </a>";
+                            // }else{
+                            //     notificaciones_html += "<a href='javascript:void(0);'class='modificar_estado_notif list-group-item'>"+date+" : "+notificaciones[i].fields.descripcion+"<span class='badge glyphicon glyphicon-tag'>Leído</span> </a>";
                                 
-                            }
+                            // }
                         };
-                        // 
+                        
                         $("#detalle_notificaciones").html(notificaciones_html);
                       }
                     }); 
@@ -81,12 +83,8 @@
 
             };
 
-
-            $(function () {
-               
+            $(function () {               
                obj_notificacion.init();
             });
-
-            
     </script>
 {% endblock %}

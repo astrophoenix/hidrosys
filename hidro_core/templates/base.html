@@ -344,19 +344,12 @@
                     acelerometro_z = mediciones.acelerometro_z;
                     num_notificaciones = mediciones.num_notificaciones;
 
-                    //var arr_vibrar_alerta = [];
                     var vibrar_alerta;
                     vibrar_alerta = obj_base.valida_medicion("temperatura_agua", temp_mar, obj_base.umbrales_temperatura_mar, socket);
-                    //arr_vibrar_alerta.push(vibrar_alerta);
                     vibrar_alerta = obj_base.valida_medicion("temperatura_aire", temp_aire, obj_base.umbrales_temperatura_aire, socket);
-                    //arr_vibrar_alerta.push(vibrar_alerta);
                     vibrar_alerta = obj_base.valida_medicion("humedad_aire", hum_aire, obj_base.umbrales_humedad_aire,socket);
-                    //arr_vibrar_alerta.push(vibrar_alerta);
                     vibrar_alerta = obj_base.valida_medicion("intensidad_luz", inten_luz, obj_base.umbrales_intensidad_luz,socket);
-                    //arr_vibrar_alerta.push(vibrar_alerta);
                     vibrar_alerta = obj_base.valida_medicion("Velocidad_aire", viento, obj_base.umbrales_viento,socket);
-                    //arr_vibrar_alerta.push(vibrar_alerta);                   
-                    
               });
           }
       }      

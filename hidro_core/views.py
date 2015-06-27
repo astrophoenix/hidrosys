@@ -630,9 +630,9 @@ def notificaciones(request):
 	}
 
 	notificaiones_no_leidas = Notificacion.objects.filter(estado=Notificacion.NO_LEIDA)
-	# for n in notificaiones_no_leidas:
-	# 	n.estado = Notificacion.LEIDA
-	# 	n.save()
+	for n in notificaiones_no_leidas:
+		n.estado = Notificacion.LEIDA
+		n.save()
 
 	response = render_to_response('notificaciones.html',parametros, context_instance=RequestContext(request))
 	response.delete_cookie('message_success')

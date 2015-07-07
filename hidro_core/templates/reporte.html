@@ -56,11 +56,11 @@
                 </div>
 
                 <div class="row"><div class="row">&nbsp;</div>
-                <div class="row">
+                {% comment %} <div class="row">
                     <div class="col-md-1"> </div>
                     <label class="col-md-2 control-label" for="text-field">Variable Física: </label>
                     <div class="col-md-2"> {{ form_buscar.variable_fisica }} </div>
-                </div>
+                </div> {% endcomment %}
 
                 <div class="row">&nbsp;</div>
                     <div class="col-md-5"> </div>
@@ -191,16 +191,19 @@
     <script type="text/javascript">
             
             $(function () {
-               
+               {% comment %}
                 //Exportar PDF
-                $("#btn_pdf").click(function(){ 
-                    var fecha_desde = $("#id_fecha_desde").val();
-                    var fecha_hasta = $("#id_fecha_hasta").val();
-                    var mes = $("#id_mes").val();
-                    var anio = $("#id_anio").val();
-                    var url_view = "{% url 'hidro_core.views.exportar_pdf' 1 %}?mes="+mes+"&anio="+anio+"&fecha_desde="+fecha_desde+"&fecha_hasta="+fecha_hasta;
-                    $(this).attr("href", url_view);
-                });
+                // $("#btn_pdf").click(function(){ 
+                //     var fecha_desde = $("#id_fecha_desde").val();
+                //     var fecha_hasta = $("#id_fecha_hasta").val();
+                //     var mes = $("#id_mes").val();
+                //     var anio = $("#id_anio").val();
+                //     var url_view = "{% url 'hidro_core.views.exportar_pdf' 1 %}?mes="+mes+"&anio="+anio+"&fecha_desde="+fecha_desde+"&fecha_hasta="+fecha_hasta;
+                //     $(this).attr("href", url_view);
+                // });
+            
+                
+            {% endcomment %}
 
                 //Exportar EXCEL
                 $("#btn_excel").click(function(){ 

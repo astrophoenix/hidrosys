@@ -11,6 +11,7 @@
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- styles -->
     <link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/build.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/forms.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/weather-icons/css/weather-icons.css" rel="stylesheet">
@@ -27,10 +28,10 @@
     <![endif]-->
     <link href="https://code.jquery.com/ui/1.10.3/themes/redmond/jquery-ui.css" rel="stylesheet" media="screen">
 
-    <!-- Bootstrap -->
+   {% comment %}  <!-- Bootstrap -->
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- styles -->
-    <link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet"> {% endcomment %}
 
     <link href="{{ STATIC_URL }}css/stats.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/global_hydro.css" rel="stylesheet">
@@ -101,24 +102,17 @@
                     <li><a href="{% url 'hidro_core.views.configuracion' %}">
                       <i class="glyphicon glyphicon-wrench"></i>Configuración</a>
                     </li>
-                    <li><a href="{% url 'hidro_core.views.reporte' %}">
-                      <i class="glyphicon glyphicon-list"></i>Reportes</a>
-                    </li>
-                    <!--<li class="current"><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
-                    <li><a href="buttons.html"><i class="glyphicon glyphicon-record"></i> Buttons</a></li>
-                    <li><a href="editors.html"><i class="glyphicon glyphicon-pencil"></i> Editors</a></li>
-                    <li><a href="forms.html"><i class="glyphicon glyphicon-tasks"></i> Forms</a></li> -->
-                    <!-- <li class="submenu">
+                    <li class="submenu">
                          <a href="#">
-                            <i class="glyphicon glyphicon-list"></i> Pages
+                            <i class="glyphicon glyphicon-list"></i> Reportes
                             <span class="caret pull-right"></span>
-                         </a>-->
+                         </a>
                          <!-- Sub menu -->
-                         <!--<ul>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="signup.html">Signup</a></li>
-                        </ul>-->
-                   <!-- </li>-->
+                         <ul style="display: none;">
+                            <li><a href="{% url 'hidro_core.views.reporte_grafico' %}">Gráficos</a></li>
+                            <li><a href="{% url 'hidro_core.views.reporte' %}">Datos</a></li>
+                        </ul>
+                    </li>
                 </ul>
              </div>
           </div>
@@ -181,7 +175,7 @@
     <script src="{{ STATIC_URL }}vendors/datatables/js/jquery.dataTables.min.js"></script>
     <script src="{{ STATIC_URL }}vendors/datatables/dataTables.bootstrap.js"></script>
 
-    <!--<script src="{{ STATIC_URL }}js/custom.js"></script>-->
+    <script src="{{ STATIC_URL }}js/custom.js"></script>
     <!--<script src="{{ STATIC_URL }}js/tables.js"></script>-->
     <script src="{{ STATIC_URL }}vendors/form-helpers/js/bootstrap-formhelpers.min.js"></script>
     <script src="{{ STATIC_URL }}vendors/select/bootstrap-select.min.js"></script>
@@ -197,9 +191,9 @@
 
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-
     <!--<script src="{{ STATIC_URL }}js/forms.js"></script>-->
     
+
 
     <script type="text/javascript">
       

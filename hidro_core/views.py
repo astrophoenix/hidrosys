@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import auth
 from django.forms.models import model_to_dict
-from django.db import transaction
+from django.db import transaction, connection
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
@@ -36,6 +36,8 @@ from reportlab.lib.units import mm
 
 from django.forms.formsets import formset_factory
 from django.contrib import messages
+from django.db.models import Avg, Max, Min, Count
+import decimal
 
 
 # Create your views here.
@@ -247,6 +249,86 @@ def reporte(request):
 	response.delete_cookie('message_error')
 	response.delete_cookie('message')
 	return response
+
+
+def json_encode_decimal(obj):
+	if isinstance(obj, decimal.Decimal):
+		return str(obj)
+	raise TypeError(repr(obj) + " is not JSON serializable")
+
+@login_required
+def obtener_mediciones_grafica(request):
+	cursor = None
+	cursor = connection.cursor()
+	if 'anio' in request.GET:
+		anio = request.GET['anio']
+		if anio != '':
+			anio = "'"+anio+"'"
+			sql_str = "SELECT to_char(fecha_creacion, 'MM') as mes, round(avg(temperatura), 2), round(avg(humedad), 2), \
+			round(avg(intensidad_luz), 2), round(avg(temperatura_agua), 2), round(avg(viento), 2), round(avg(compaz_mag), 2), \
+			round(avg(acelerometro_x), 2), round(avg(acelerometro_y), 2), round(avg(acelerometro_z), 2)\
+			FROM hidro_core_equipomedicion \
+			WHERE to_char(fecha_creacion, 'YYYY') = "+anio+" GROUP BY mes"
+
+	if 'mes' in request.GET:
+		mes = request.GET['mes']
+		anio = request.GET['anio']
+		if mes != '0':
+			if int(mes) > 0 and int(mes) < 10:
+				mes = '0'+str(mes)
+			mes_anio = "'"+anio+"-"+mes+"'"			
+			sql_str = "SELECT to_char(fecha_creacion, 'DD') as dia, round(avg(temperatura), 2), round(avg(humedad), 2), \
+						round(avg(intensidad_luz), 2), round(avg(temperatura_agua), 2), round(avg(viento), 2), round(avg(compaz_mag), 2), \
+						round(avg(acelerometro_x), 2), round(avg(acelerometro_y), 2), round(avg(acelerometro_z), 2)\
+						FROM hidro_core_equipomedicion\
+						WHERE to_char(fecha_creacion, 'YYYY-MM') = "+mes_anio+" GROUP BY dia ORDER BY dia ASC"
+
+	if 'fecha_desde' in request.GET:
+		fecha_desde = request.GET['fecha_desde']
+		if fecha_desde != '':
+			fecha_desde = datetime.strptime(fecha_desde, "%d/%m/%Y").strftime("%Y-%m-%d")
+			arr_fecha = fecha_desde.split("-")
+			fecha_hasta = arr_fecha[0] +"-"+arr_fecha[1]+"-"+str(int(arr_fecha[2])+1)
+			
+			fecha_desde = "'"+fecha_desde+" 00:00:00'"
+			fecha_hasta = "'"+fecha_hasta+" 00:00:00'"
+			sql_str = "SELECT extract(hour from fecha_creacion) as hora, \
+						round(avg(temperatura), 2), round(avg(humedad), 2), round(avg(intensidad_luz), 2), round(avg(temperatura_agua), 2), round(avg(viento), 2), round(avg(compaz_mag), 2), \
+						round(avg(acelerometro_x), 2), round(avg(acelerometro_y), 2), round(avg(acelerometro_z), 2)\
+						FROM hidro_core_equipomedicion where fecha_creacion >= "+fecha_desde+"::timestamp and fecha_creacion < "+fecha_hasta+"::timestamp group by hora"
+			
+	cursor.execute(sql_str)
+	mediciones_list = cursor.fetchall()
+	json_data = json.dumps(mediciones_list, default=json_encode_decimal)
+	return HttpResponse(json_data, content_type='application/json')
+	
+
+@login_required
+def reporte_grafico(request):
+	
+	titulo_modulo = "Reporte de Mediciones"
+	usuario = None
+	mediciones_list = None
+	message, message_error = None, None
+	form_buscar = BuscarMedicionesForm()
+
+	usuario = request.user.username
+	parametros = {
+		"usuario" : usuario, 
+		"titulo_modulo": titulo_modulo, 		
+		"message_error" : message_error,
+		"message" : message,
+		"form_buscar":form_buscar,
+		"IP_SERVER_PORT" : settings.IP_SERVER_PORT
+	}
+
+	response = render_to_response('reporte_grafico.html', parametros, context_instance=RequestContext(request))
+	response.delete_cookie('message_success')
+	response.delete_cookie('message_error')
+	response.delete_cookie('message')
+	return response
+
+
 
 
 @login_required
@@ -571,42 +653,6 @@ def exportar_excel(request, id):
 	response['Content-Disposition'] = 'attachment; filename='+nombre_archivo
 	book.save(response)
 	return response
-
-def linechart(request):
-
-    #instantiate a drawing object
-    import chart
-    d = chart.MyLineChartDrawing()
-
-    #extract the request params of interest.
-    #I suggest having a default for everything.
-    
-    d.height = 500
-    d.chart.height = 500
-    
-    d.width = 500
-    d.chart.width = 500
-   
-    d.title._text = request.session.get('Some custom title')
-    
-    d.XLabel._text = request.session.get('X Axis Labell')
-    d.YLabel._text = request.session.get('Y Axis Label')
-
-    d.chart.data = [((1,1), (2,2), (2.5,1), (3,3), (4,5)),((1,2), (2,3), (2.5,2), (3.5,5), (4,6))]
-   
-
-    
-    labels =  ["Label One","Label Two"]
-    if labels:
-        # set colors in the legend
-        d.Legend.colorNamePairs = []
-        for cnt,label in enumerate(labels):
-                d.Legend.colorNamePairs.append((d.chart.lines[cnt].strokeColor,label))
-
-
-    #get a GIF (or PNG, JPG, or whatever)
-    binaryStuff = d.asString('gif')
-    return HttpResponse(binaryStuff, 'image/gif')
 
 
 @login_required

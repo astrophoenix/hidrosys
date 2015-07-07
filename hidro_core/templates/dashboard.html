@@ -72,14 +72,17 @@
                     <li><a href="{% url 'hidro_core.views.configuracion' %}">
                       <i class="glyphicon glyphicon-wrench"></i> Configuración</a>
                     </li>
-                    <li><a href="{% url 'hidro_core.views.reporte' %}"><i class="glyphicon glyphicon-list"></i>Reportes</a></li>
-
-                    <!-- <li><a href="calendar.html"><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
-                    <li class="current"><a href="stats.html"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>
-                    <li><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
-                    <li><a href="buttons.html"><i class="glyphicon glyphicon-record"></i> Buttons</a></li>
-                    <li><a href="editors.html"><i class="glyphicon glyphicon-pencil"></i> Editors</a></li>
-                    <li><a href="forms.html"><i class="glyphicon glyphicon-tasks"></i> Forms</a></li> -->
+                    <li class="submenu">
+                         <a href="#">
+                            <i class="glyphicon glyphicon-list"></i> Reportes
+                            <span class="caret pull-right"></span>
+                         </a>
+                         <!-- Sub menu -->
+                         <ul style="display: none;">
+                            <li><a href="{% url 'hidro_core.views.reporte_grafico' %}">Gráficos</a></li>
+                            <li><a href="{% url 'hidro_core.views.reporte' %}">Datos</a></li>
+                        </ul>
+                    </li>
                 </ul>
              </div>
       </div>
@@ -263,11 +266,11 @@
     <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="{{ STATIC_URL }}vendors/morris/morris.css">
-
     <script src="{{ STATIC_URL }}vendors/jquery.knob.js"></script>
     <script src="{{ STATIC_URL }}vendors/raphael-min.js"></script>
     <script src="{{ STATIC_URL }}vendors/morris/morris.min.js"></script>
     <script src="{{ STATIC_URL }}js/stats.js"></script>
+    <script src="{{ STATIC_URL }}js/custom.js"></script>
 
     <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.js"></script>
     <script src="{{ STATIC_URL }}vendors/flot/jquery.flot.categories.js"></script>
@@ -365,10 +368,11 @@
                     };
                     
                     var url_view = "{% url 'hidro_core.views.obtener_notificaciones' %}";
+                    
                     $.ajax({
                       url : url_view,
                       type : "GET",
-                      data:params,
+                      data : params,
                       success : function(data)
                       {
                           $("#num_notif_no_leidas").html("");

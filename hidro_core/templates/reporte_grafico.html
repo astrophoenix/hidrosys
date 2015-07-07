@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-10">&nbsp;&nbsp;</div>
+    <div class="col-md-2">
+        <div class="btn-group">
+            {% comment %} <button data-toggle="dropdown" class="btn btn-success dropdown-toggle" type="button">
+                <i class="glyphicon glyphicon-download"></i>
+                Exportar 
+                <span class="caret"></span>
+            </button> {% endcomment %}
+        </div>
+    </div>
+</div> 
+<br/>
+<div class="row">
+    <div class="col-md-12 panel-default">
+        <div class="content-box-header panel-heading">
+            <div class="panel-title ">
+                <h4>Filtrar Registros</h4>
+            </div>
+        </div>
+        <div class="content-box-large box-with-header">
+                <div class="row">
+                    <div class="col-md-1"> </div>
+                    <label class="col-md-2 control-label" for="text-field">Año: </label>
+                    <div class="col-md-2"> {{form_buscar.anio}} </div>
+                    <div class="col-md-2"> </div>
+                    <label class="col-md-1 control-label" for="text-field">Mes: </label>
+                    <div class="col-md-2"> {{ form_buscar.mes }} </div>
+                    <div class="col-md-2"> </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-1"> </div>
+                    <label class="col-md-2 control-label" for="text-field">Fecha Específica: </label>
+                    <div class="col-md-2"> {{ form_buscar.fecha_desde }} </div>
+                    
+                    {% comment %} <label class="col-md-2 control-label" for="text-field">Fecha Hasta: </label>
+                    <div class="col-md-2"> {{ form_buscar.fecha_hasta }} </div> {% endcomment %}
+                    <div class="col-md-1"></div>
+                    <label class="col-md-2 control-label" for="text-field">Variable Física: </label>
+                    <div class="col-md-4">
+                        <div class="button-group">
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                Seleccionar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                {% comment %} <li>
+                                    <a href="#" class="small" data-value="option1" tabIndex="-1">
+                                        <div class="checkbox checkbox-primary">
+                                            <input id="id_todas" name="todas" value="T" type="checkbox"/>
+                                            <label for="id_todas"> Todas</label>
+                                        </div>
+                                    </a>
+                                </li> {% endcomment %}
+                                <li>
+                                    <a href="#" class="small" data-value="option1" tabIndex="-1">
+                                        <div class="checkbox checkbox-primary">
+                                            <input id="id_temperatura_aire" name="temperatura_aire" value="TAI" type="checkbox"/>
+                                            <label for="id_temperatura_aire"> Temperatura Aire</label>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="small" data-value="option1" tabIndex="-1">
+                                        <div class="checkbox checkbox-primary">
+                                            <input id="id_humedad_aire" name="temperatura_agua" value="HAI" type="checkbox"/>
+                                            <label for="id_humedad_aire"> Humedad Aire</label>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="small" data-value="option4" tabIndex="-1">
+                                        <div class="checkbox checkbox-primary">
+                                            <input id="id_temperatura_agua" name="temperatura_agua" value="TAG" type="checkbox"/>
+                                            <label for="id_temperatura_agua"> Temperatura Agua</label>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="small" data-value="option5" tabIndex="-1">
+                                        <div class="checkbox checkbox-primary">
+                                            <input id="id_iluminancia" name="iluminancia" value="I" type="checkbox"/>
+                                            <label for="id_iluminancia"> Iluminancia</label>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="small" data-value="option5" tabIndex="-1">
+                                        <div class="checkbox checkbox-primary">
+                                            <input id="id_velocidad_viento" name="velocidad_viento" value="VV" type="checkbox"/>
+                                            <label for="id_velocidad_viento"> Velocidad Viento</label>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                {% comment %} <li>
+                                    <a href="#" class="small" data-value="option5" tabIndex="-1">
+                                        <div class="checkbox checkbox-primary">
+                                            <input id="id_acelerometro" name="acelerometro" value="AC" type="checkbox"/>
+                                            <label for="id_acelerometro"> Acelerometro</label>
+                                        </div>
+                                    </a>
+                                </li> {% endcomment %}
+
+                                <li>
+                                    <a href="#" class="small" data-value="option5" tabIndex="-1">
+                                        <div class="checkbox checkbox-primary">
+                                            <input id="id_compas_magnetico" name="compas_magnetico" value="CM" type="checkbox"/>
+                                            <label for="id_compas_magnetico"> Compás Magnetico</label>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-1"> </div>
+                    
+
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-3">
+                        <button id="btn_generar_grafica" class="btn btn-primary" >
+                            <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                            Generar Gráfica
+                        </button>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+<div class="row"></div>
+<div id="grafico" class="row">
+    <div id="chart" style="min-width: 310px; height: 400px; margin: 0 auto">
+
+        {% comment %} <div class="cente-text three-quarters-loader"></div> {% endcomment %}
+
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/data.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+    <!-- Additional files for the Highslide popup effect -->
+    <script type="text/javascript" src="http://www.highcharts.com/media/com_demo/highslide-full.min.js"></script>
+    <script type="text/javascript" src="http://www.highcharts.com/media/com_demo/highslide.config.js" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="http://www.highcharts.com/media/com_demo/highslide.css" />
+    <link rel="stylesheet" href="http://css-spinners.com/css/spinner/three-quarters.css" type="text/css">
+
+
+    <script type="text/javascript">
+
+            //Selección de los checkboxs para el parámetro Variable física
+            $( '.dropdown-menu a' ).on( 'click', function( event ) { event.stopPropagation(); });
+            
+            $.datepicker.regional['es'] = {
+                 closeText: 'Cerrar',
+                 prevText: '<Ant',
+                 nextText: 'Sig>',
+                 currentText: 'Hoy',
+                 monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                 monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+                 dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                 dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+                 dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+                 weekHeader: 'Sm',
+                 dateFormat: 'dd/mm/yy',
+                 firstDay: 1,
+                 isRTL: false,
+                 showMonthAfterYear: false,
+                 yearSuffix: ''
+             };
+             $.datepicker.setDefaults($.datepicker.regional['es']);
+
+            $(function () {
+                $( "#id_fecha_desde" ).datepicker({
+                   language: "it",
+                   autoclose: true,
+                   todayHighlight: true,
+                   dateFormat: 'dd/mm/yy'
+                });
+
+                $( "#id_fecha_hasta" ).datepicker({
+                    language: "it",
+                    autoclose: true,
+                    todayHighlight: true,
+                    dateFormat: 'dd/mm/yy'
+                });
+            });
+    </script>
+
+    <script type="text/javascript">
+            
+            objeto_reporte_grafico = {
+                    seriesOptions : [],
+                    seriesCounter : 0,
+                    names : [],
+
+                    init : function(){
+
+                        $("#btn_generar_grafica").click(objeto_reporte_grafico.generar_grafica);
+
+                    },
+
+                    nombreVariable: function(indice_variable){
+
+                        switch(indice_variable){
+                            case 1: 
+                                return "Temperatura Aire";
+                                break;
+                            case 2: 
+                                return "Humedad Aire";
+                                break;
+                            case 3: 
+                                return "Temperatura Agua";
+                                break;
+                            case 4: 
+                                return "Iluminancia";
+                                break;
+                            case 5: 
+                                return "Velocidad Viento";
+                                break;
+                            case 6: 
+                                return "Compás Magnético";
+                                break;
+                        }
+                    },
+
+                    generar_grafica : function(){
+
+                        var anio = $( "#id_anio" ).val();
+                        var mes = $( "#id_mes" ).val();
+                        var fecha_desde = $("#id_fecha_desde").val();
+
+                        var params = {
+                           anio: anio,
+                           mes: mes,
+                           fecha_desde: fecha_desde,
+                        };
+
+                        var url_view = "{% url 'hidro_core.views.obtener_mediciones_grafica' %}";
+                         
+                        datos_sensores = new Array();
+                        $.ajax({
+                            url : url_view,
+                            type : "GET",
+                            data : params,
+                            success : function(data){
+                                datos_sensores = data;
+                                categoria = [];
+
+                                if(anio != '' && mes != 0)
+                                {
+                                    var numero_dias_mes = new Date(anio, mes, 0).getDate();
+                                    for (var i = 0; i < datos_sensores.length; i++)
+                                        categoria.push(datos_sensores[i][0]);
+                                    tipo_periodo = 1
+                                }else if(anio != "" && mes == 0 ){
+                                    categoria = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                                    tipo_periodo = 2
+                                }else if( fecha_desde.length != 0 ){
+                                    for (var i = 0; i < datos_sensores.length; i++)
+                                        categoria.push(datos_sensores[i][0]);
+                                    tipo_periodo = 3
+                                }
+
+                                var numero_chekeados = $('input:checkbox:checked').length;
+                                if(numero_chekeados > 1){
+                                    mensaje_titulo = "VALORES PROMEDIO DE VARIABLES";
+                                    ytitulo = "";
+                                }else{
+
+                                    if ($("#id_temperatura_aire").is(":checked")){
+                                            variable_nombre = objeto_reporte_grafico.nombreVariable(1);
+                                    }else if ($("#id_humedad_aire").is(":checked")){
+                                        variable_nombre = objeto_reporte_grafico.nombreVariable(2);
+                                    }else if ($("#id_temperatura_agua").is(":checked")){
+                                        variable_nombre = objeto_reporte_grafico.nombreVariable(3);
+                                    }else if ($("#id_iluminancia").is(":checked")){
+                                        variable_nombre = objeto_reporte_grafico.nombreVariable(4);
+                                    }else if ($("#id_velocidad_viento").is(":checked")){
+                                        variable_nombre = objeto_reporte_grafico.nombreVariable(5);
+                                    }else if ($("#id_compas_magnetico").is(":checked")){
+                                        variable_nombre = objeto_reporte_grafico.nombreVariable(6);
+                                    }
+                                    mensaje_titulo = "VALORES PROMEDIO DE " + variable_nombre.toUpperCase();
+                                    ytitulo = variable_nombre;
+                                }
+
+                                if (tipo_periodo == 3) {
+                                    mensaje_subtitulo = "Período: " + fecha_desde;
+                                    xlabel = "Hora"
+                                }else if (tipo_periodo == 2){
+                                    mensaje_subtitulo = "Período: " + anio;
+                                    xlabel = 'Meses'
+                                }else if (tipo_periodo == 1){
+                                    meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+                                    mensaje_subtitulo = "Período: " + meses[mes] +" del " + anio;
+                                    xlabel = 'Dia'
+                                }
+                                
+                                $('#chart').highcharts({
+
+                                    chart: { type: 'line' },
+                                    title: { text: mensaje_titulo },
+                                    subtitle: { text: mensaje_subtitulo },
+                                    xAxis: { categories: categoria, title: { text: xlabel } },
+                                    yAxis: { title: { text: ytitulo }},
+                                    plotOptions: {
+                                        line: {
+                                            dataLabels: { enabled: true },
+                                            enableMouseTracking: false
+                                        },
+                                    },
+                                    series: []
+                                });
+            
+
+                                var grafica = $('#chart').highcharts();
+
+                                if($("#id_todas").is(":checked")){
+                                    filtro = 1;
+                                }
+
+                                if ($("#id_temperatura_aire").is(":checked")){
+                                    datos_temperatura_aire = []
+                                    for (var i = 0; i < datos_sensores.length; i++){
+                                        datos_temperatura_aire.push(parseFloat(datos_sensores[i][1]));
+                                    }
+                                    grafica.addSeries({
+                                        name : objeto_reporte_grafico.nombreVariable(1),
+                                        data: datos_temperatura_aire
+                                    });
+                                }
+                                if ($("#id_humedad_aire").is(":checked")){
+                                    datos_humedad_aire = []
+                                    for (var i = 0; i < datos_sensores.length; i++){
+                                        datos_humedad_aire.push(parseFloat(datos_sensores[i][2]));
+                                    }
+                                    grafica.addSeries({
+                                        name : objeto_reporte_grafico.nombreVariable(2),
+                                        data: datos_humedad_aire
+                                    });
+                                }
+
+                                if ($("#id_temperatura_agua").is(":checked")){
+                                    datos_temperatura_agua = []
+                                    for (var i = 0; i < datos_sensores.length; i++){
+                                        datos_temperatura_agua.push(parseFloat(datos_sensores[i][4]));
+                                    }
+                                    grafica.addSeries({
+                                        name : objeto_reporte_grafico.nombreVariable(3),
+                                        data: datos_temperatura_agua
+                                    });
+                                }
+                                if ($("#id_iluminancia").is(":checked")){
+                                    datos_iluminancia = []
+                                    for (var i = 0; i < datos_sensores.length; i++){
+                                        datos_iluminancia.push(parseFloat(datos_sensores[i][3]));
+                                    }
+                                    grafica.addSeries({
+                                        name : objeto_reporte_grafico.nombreVariable(4),
+                                        data: datos_iluminancia
+                                    });
+                                }
+                                if ($("#id_velocidad_viento").is(":checked")){
+                                    datos_velocidad_viento = [];
+                                    for (var i = 0; i < datos_sensores.length; i++){
+                                        datos_velocidad_viento.push(parseFloat(datos_sensores[i][5]));
+                                    }
+                                    grafica.addSeries({
+                                        name : objeto_reporte_grafico.nombreVariable(5),
+                                        data: datos_velocidad_viento
+                                    });   
+                                }
+                                // if ($("#id_acelerometro").is(":checked")){
+                                //     names.push("Acelerometro");
+                                // }
+
+                                if ($("#id_compas_magnetico").is(":checked")){
+                                    datos_compas_mag = [];
+                                    for (var i = 0; i < datos_sensores.length; i++){
+                                        datos_compas_mag.push(parseFloat(datos_sensores[i][6]));
+                                    }
+                                    grafica.addSeries({
+                                        name : objeto_reporte_grafico.nombreVariable(6),
+                                        data: datos_compas_mag
+                                    });   
+                                }
+
+                                grafica.xAxis[0].setCategories(categoria)
+                            },
+                        });
+                    },
+            },
+            
+
+            $(function () {
+                objeto_reporte_grafico.init();
+            });
+    </script>
+{% endblock %}

@@ -72,6 +72,11 @@
                     <li><a href="{% url 'hidro_core.views.configuracion' %}">
                       <i class="glyphicon glyphicon-wrench"></i> Configuración</a>
                     </li>
+                    <li>
+                      <a href="#" class="" data-toggle="modal" data-target="#basicModal">
+                        <i class="glyphicon glyphicon-map-marker"></i>Ubicación
+                      </a>
+                    </li>
                     <li class="submenu">
                          <a href="#">
                             <i class="glyphicon glyphicon-list"></i> Reportes
@@ -241,6 +246,23 @@
       </div>
     </div>
 
+    <!-- -->
+        <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                  <h4 class="modal-title" id="myModalLabel">Úbicación de Boya</h4>
+                  </div>
+                  <div class="modal-body">
+                      <h3>Lago Espol - Guayaquil</h3>
+
+                      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d882.6290171012986!2d-79.96195527228838!3d-2.1446468521878055!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1ses!2sec!4v1436325518880" width="560" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+                  </div>
+          </div>
+        </div>
+      </div>
+    <!-- -->
     <footer>
          <div class="container">
          

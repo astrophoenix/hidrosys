@@ -47,7 +47,10 @@
 
 .position_badge{
   position: absolute;
-  margin: -36px 0px 0 122px;
+  /*margin: -36px 0px 0 122px;*/
+  left: 88%;
+  top:10%;
+  z-index:5;
 }
 
 .glyphicon_big {

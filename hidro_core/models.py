@@ -29,7 +29,6 @@ class EquipoMedicion(models.Model):
     acelerometro_z = models.DecimalField(max_digits = 11, decimal_places = 2, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add = True)
 
-
 class UmbralMedidaFisica(models.Model):
     nom_variable_fisica = models.CharField(max_length = 100, null=True)
     variable_fisica = models.CharField(max_length = 100, null=True)

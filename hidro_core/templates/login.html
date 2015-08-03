@@ -41,7 +41,8 @@
 	           <div class="col-md-12">
 	              <!-- Logo -->
 	              <div class="logo">
-                     <h1><a href="">Hydro</a></h1>
+                     {% comment %} <h4><a href="">Sistema Hidrometeorológico</a></h4> {% endcomment %}
+                     {% comment %} <h3><a href="">Sistema Hidrometeorológico</a></h3> {% endcomment %}
                   </div>
 	           </div>
 	        </div>
@@ -52,7 +53,7 @@
 		<div class="row">
 
 			<div class="col-md-4 col-md-offset-4">
-  
+        
         {% if message_success %}
                 <div class="alert alert-success alert-success" role="alert">
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -76,6 +77,9 @@
 				<div class="login-wrapper">
 			        <div class="box">
 			            <div class="content-wrap">
+                      <img src="{{ STATIC_URL }}images/logo.png">
+                      <h4 style="color:#999;">Sistema Hidrometeorológico</h3>
+                      <br/>
 			                <h6>Autenticación</h6>
                         <form id="form_ingresar"action="" method="post">{% csrf_token %}
     			                <input class="form-control" name="username" type="text" placeholder="usuario">

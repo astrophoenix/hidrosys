@@ -80,7 +80,7 @@ def salir(request):
 
 @login_required
 def dashboard(request):
-	titulo_modulo = "Mediciones "
+	titulo_modulo = "Panel de Monitoreo General"
 	usuario = None
 	equipos_list = None
 	
@@ -176,7 +176,7 @@ def consultar_equipos(request):
 @login_required
 def reporte(request):
 	
-	titulo_modulo = "Reporte de Mediciones"
+	titulo_modulo = "Reporte de Datos"
 	usuario = None
 	mediciones_list = None
 	message, message_error = None, None
@@ -260,6 +260,7 @@ def json_encode_decimal(obj):
 def obtener_mediciones_grafica(request):
 	cursor = None
 	cursor = connection.cursor()
+	sql_str  = ''
 	if 'anio' in request.GET:
 		anio = request.GET['anio']
 		if anio != '':
@@ -306,7 +307,7 @@ def obtener_mediciones_grafica(request):
 @login_required
 def reporte_grafico(request):
 	
-	titulo_modulo = "Reporte de Mediciones"
+	titulo_modulo = "Reporte Gráfico"
 	usuario = None
 	mediciones_list = None
 	message, message_error = None, None

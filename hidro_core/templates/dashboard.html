@@ -27,7 +27,8 @@
              <div class="col-md-5">
                 <!-- Logo -->
                 <div class="logo">
-                   <h1><a href="#">Hydro</a></h1>
+                   <h1><a href="#"><img src="{{ STATIC_URL }}images/logo_banner.png" style="width:8%;"> Enki</a></h1>
+
                 </div>
              </div>
              <div class="col-md-7">
@@ -37,7 +38,7 @@
                             <li class="dropdown">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ usuario }}<b class="caret"></b></a>
                               <ul class="dropdown-menu animated fadeInUp">
-                                <li><a href="#">Salir</a></li>
+                                <li><a href="{% url 'hidro_core.views.salir' %}">Salir</a></li>
                               </ul>
                             </li>
                           </ul>
@@ -94,7 +95,7 @@
       <div class="col-md-10">
          <div class="content-box-large" style="diplay:none">
           <div class="panel-heading">
-            <div class="panel-title"><h3><b>Mediciones</h3></b></div>
+            <div class="panel-title"><h3><b>Panel de Monitoreo General</h3></b></div>
           </div>
           <div class="panel-body">
               <div class="row">
@@ -267,7 +268,7 @@
          <div class="container">
          
             <div class="copy text-center">
-               Copyright 2014 <a href='#'>Website</a>
+               Copyright 2015 <strong>AstroCorp</strong>
             </div>
             
          </div>

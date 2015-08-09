@@ -278,6 +278,7 @@
     <!-- <script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>-->
      <!-- Importo el archivo Javascript de Highcharts directamente desde su servidor -->
     <script src="http://{{ IP_SERVER_PORT }}/socket.io/socket.io.js"></script>
+     {% comment %} <script src="http://{{ IP_SERVER_PORT_NOTIFI }}/socket.io/socket.io.js"></script> {% endcomment %}
     <!--<script src="https://code.highcharts.com/highcharts.js"></script>-->
 
     {% comment %} // <script src="http://localhost:4000/socket.io/socket.io.js"></script> {% endcomment %}
@@ -321,9 +322,42 @@
             {
                 obj_dashboard.init_knobs(obj_dashboard.ids_knobs);
                 obj_dashboard.obtener_umbrales();
+                {{ IP_SERVER_PORT }}
                 var socket = io('http://{{ IP_SERVER_PORT }}');
                 obj_dashboard.obtener_datos_medidos_equipo(socket);
+                obj_dashboard.obtener_notificaciones(socket, no_leidas=false);
+                obj_dashboard.obtener_notificaciones(socket, no_leidas=true);
             },
+
+            obtener_notificaciones : function (socket, no_leidas){
+                if(no_leidas == true){
+                  socket.emit('obtener_notif_no_leidas', '1'); 
+                  socket.on('resp_notifi_no_leidas', function (resp) {
+                      console.info(resp);
+                      notificaciones_noleidas = resp;
+                      $("#num_notif_no_leidas").html("");
+                      if ($("#num_notif_no_leidas").hasClass('hide')){
+                          $("#num_notif_no_leidas").removeClass('hide');
+                      }
+
+                      $("#num_notif_no_leidas").html(notificaciones_noleidas); 
+                  });
+                }else{
+                  socket.emit('obtener_ultima_notifiacion', {});
+                  socket.on('respuesta_notificacion', function (resp) {
+                      console.info(resp.descripcion);
+                      notificaciones_noleidas = resp.notifi_no_leidas;
+                      $("#num_notif_no_leidas").html("");
+                      if ($("#num_notif_no_leidas").hasClass('hide')){
+                          $("#num_notif_no_leidas").removeClass('hide');
+                      }
+
+                      $("#num_notif_no_leidas").html(notificaciones_noleidas); 
+                  });
+
+                }
+            },
+
 
             init_knobs : function (knobs)
             {
@@ -334,22 +368,7 @@
             },
 
 
-            generar_mensaje_notifiacion : function (varible_fisica, valor_medicion, estado) 
-            {
-
-              if (varible_fisica == "#knob_temp_mar")
-                  var msg_notificacion = "Alerta "+ estado +" Temperatura Agua en : " + valor_medicion + "°C";
-              if (varible_fisica == "#knob_temp_aire")
-                  var msg_notificacion = "Alerta "+ estado +" Temperatura Ambiente en : " + valor_medicion + "°C";
-              if (varible_fisica == "#knob_hum_aire")
-                  var msg_notificacion = "Alerta "+ estado +" Humedad Aire en : " + valor_medicion + "%";
-              if (varible_fisica == "#knob_luz")
-                  var msg_notificacion = "Alerta "+ estado +" Iluminancia en : " + valor_medicion + "Lux";
-              if (varible_fisica == "#knob_vie")
-                  var msg_notificacion = "Alerta "+ estado +" Velocidad Viento en : " + valor_medicion + "m/s";
-
-                return msg_notificacion;
-            },
+            
 
             validar_medicion : function (variable_fisica, valor_medicion, rangos_var_fisica)
             {
@@ -376,35 +395,12 @@
                 }else if (valor_max_amarillo < valor_medicion && valor_medicion <= valor_max_naranja){ // Rango Estado Naranja
                   $(variable_fisica).trigger('configure',{min: '0', max: valor_max, "fgColor" : "#f0ad4e", "readOnly": true });
                   vibra_alerta = true;
-                  var msg_notificacion = obj_dashboard.generar_mensaje_notifiacion (variable_fisica, valor_medicion, estado="NARANJA");
                 }else if (valor_medicion > valor_max_naranja ){ // Rango Estado Rojo
                   $(variable_fisica).trigger('configure',{min: '0', max: valor_max, "fgColor" : "#d9534f", "readOnly": true });
-                  var msg_notificacion = obj_dashboard.generar_mensaje_notifiacion (variable_fisica, valor_medicion, estado="ROJA");
                   vibra_alerta = true;
                 }
 
-                if (vibra_alerta == true){
-                  
-                    var params = {
-                      crear_notificacion : 1,
-                      descripcion : msg_notificacion
-                    };
-                    
-                    var url_view = "{% url 'hidro_core.views.obtener_notificaciones' %}";
-                    
-                    $.ajax({
-                      url : url_view,
-                      type : "GET",
-                      data : params,
-                      success : function(data)
-                      {
-                          $("#num_notif_no_leidas").html("");
-                          if ($("#num_notif_no_leidas").hasClass('hide'))
-                            $("#num_notif_no_leidas").removeClass('hide');
-                          $("#num_notif_no_leidas").html(data.length);  
-                      }
-                    });                    
-                }
+                
 
                 return vibra_alerta;
               

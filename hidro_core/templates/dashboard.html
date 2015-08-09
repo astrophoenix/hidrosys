@@ -331,8 +331,7 @@
             obtener_notificaciones : function (socket, no_leidas){
                 if(no_leidas == true){
                   socket.emit('obtener_notif_no_leidas', '1'); 
-                  socket.on('resp_notifi_no_leidas', function (resp) {
-                      console.info(resp);
+                  socket.on('resp_notifi_no_leidas', function (resp) {                      
                       notificaciones_noleidas = resp;
                       $("#num_notif_no_leidas").html("");
                       if ($("#num_notif_no_leidas").hasClass('hide')){
@@ -344,7 +343,6 @@
                 }else{
                   socket.emit('obtener_ultima_notifiacion', {});
                   socket.on('respuesta_notificacion', function (resp) {
-                      console.info(resp.descripcion);
                       notificaciones_noleidas = resp.notifi_no_leidas;
                       $("#num_notif_no_leidas").html("");
                       if ($("#num_notif_no_leidas").hasClass('hide')){

@@ -322,7 +322,6 @@
             {
                 obj_dashboard.init_knobs(obj_dashboard.ids_knobs);
                 obj_dashboard.obtener_umbrales();
-                {{ IP_SERVER_PORT }}
                 var socket = io('http://{{ IP_SERVER_PORT }}');
                 obj_dashboard.obtener_datos_medidos_equipo(socket);
                 obj_dashboard.obtener_notificaciones(socket, no_leidas=false);
